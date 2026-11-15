@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>نظام إدارة التشطيبات</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Tajawal', sans-serif; background-color: #f8fafc; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body class="text-slate-800">
+
+  <!-- شاشة التحميل -->
+  <div id="loading-screen" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+    <div class="text-center">
+      <div class="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p class="font-bold text-slate-600">جاري التحميل...</p>
+    </div>
+  </div>
+
+  <!-- شاشة تسجيل الدخول / إنشاء حساب -->
+  <div id="auth-screen" class="hidden min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100">
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-black mb-4">ت</div>
+        <h1 class="text-2xl font-bold text-slate-800">نظام التشطيبات</h1>
+        <p class="text-slate-500 text-sm mt-2">سجل دخولك أو أنشئ حساب جديد</p>
+      </div>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold mb-1">الاسم بالكامل (للحساب الجديد فقط)</label>
+          <input type="text" id="fullName" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200" placeholder="محمد أحمد">
+        </div>
+        <div>
+          <label class="block text-sm font-bold mb-1">البريد الإلكتروني</label>
+          <input type="email" id="email" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200" placeholder="name@example.com">
+        </div>
+        <div>
+          <label class="block text-sm font-bold mb-1">كلمة المرور</label>
+          <input type="password" id="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200" placeholder="••••••••">
+        </div>
+        
+        <div id="auth-error" class="text-red-500 text-sm font-bold hidden"></div>
+
+        <button id="loginBtn" onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition">تسجيل الدخول</button>
+        <button id="signupBtn" onclick="handleSignup()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl transition">إنشاء حساب جديد</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- لوحة التحكم الرئيسية -->
+  <div id="app-screen" class="hidden min-h-screen pb-20">
+    <!-- الهيدر -->
+    <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-10">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold">ت</div>
+        <span class="font-bold text-lg">التشطيبات</span>
+      </div>
+      <button onclick="handleLogout()" class="text-red-500 text-sm font-bold bg-red-50 px-3 py-1.5 rounded-lg">خروج</button>
+    </header>
+
+    <main class="p-4 max-w-2xl mx-auto space-y-6">
+      
+      <!-- قسم إنشاء شركة (لو المستخدم جديد) -->
+      <div id="no-company-section" class="hidden bg-white rounded-2xl shadow-sm p-6 border border-slate-100 text-center">
+        <h2 class="text-xl font-bold mb-2">أهلاً بك!</h2>
+        <p class="text-slate-500 mb-6">أنت لست مرتبطاً بأي شركة حتى الآن. أنشئ شركتك الأولى للبدء.</p>
+        
+        <input type="text" id="newCompanyName" class="w-full px-4 py-3 rounded-xl border border-slate-200 mb-3 focus:outline-none focus:border-amber-500" placeholder="اسم شركة التشطيبات">
+        <button onclick="handleCreateCompany()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">إنشاء الشركة</button>
+      </div>
+
+      <!-- قسم لوحة التحكم (لو المستخدم عنده شركة) -->
+      <div id="dashboard-section" class="hidden space-y-4">
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-lg">
+          <p class="text-slate-400 text-sm mb-1">مرحباً بك في</p>
+          <h2 id="display-company-name" class="text-2xl font-bold mb-4">اسم الشركة</h2>
+          <div class="flex items-center gap-2 bg-white/10 w-fit px-3 py-1.5 rounded-lg text-sm">
+            <span>دورك:</span>
+            <span id="display-role" class="font-bold text-amber-400">مالك</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center">
+            <div class="text-3xl mb-2">👥</div>
+            <div class="text-sm text-slate-500">الأعضاء</div>
+            <div class="font-bold text-lg">قريباً</div>
+          </div>
+          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center">
+            <div class="text-3xl mb-2">🏗️</div>
+            <div class="text-sm text-slate-500">المشاريع</div>
+            <div class="font-bold text-lg">قريباً</div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // ============================================
+    // 1. الإعدادات (لازم تغيرهم)
+    // ============================================
+    const SUPABASE_URL = 'https://qdqecfaozbxivlwbinew.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_EK-n56uXsI94eiGWhH25sQ_Toj32Oho';
+
+    // ============================================
+    // 2. تهيئة Supabase
+    // ============================================
+    const { createClient } = supabase;
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ============================================
+    // 3. دوال مساعدة
+    // ============================================
+    function showScreen(screenId) {
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.add('hidden');
+      document.getElementById(screenId).classList.remove('hidden');
+    }
+
+    function showError(msg) {
+      const err = document.getElementById('auth-error');
+      err.textContent = msg;
+      err.classList.remove('hidden');
+      setTimeout(() => err.classList.add('hidden'), 5000);
+    }
+
+    // ============================================
+    // 4. تسجيل الدخول والإنشاء
+    // ============================================
+    async function handleLogin() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if (!email || !password) return showError('أدخل البريد وكلمة المرور');
+
+      const btn = document.getElementById('loginBtn');
+      btn.textContent = 'جاري الدخول...'; btn.disabled = true;
+
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      
+      btn.textContent = 'تسجيل الدخول'; btn.disabled = false;
+      if (error) showError('خطأ: ' + error.message);
+    }
+
+    async function handleSignup() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const fullName = document.getElementById('fullName').value;
+      
+      if (!email || !password || !fullName) return showError('أكمل كل البيانات');
+
+      const btn = document.getElementById('signupBtn');
+      btn.textContent = 'جاري الإنشاء...'; btn.disabled = true;
+
+      const { error } = await supabaseClient.auth.signUp({ 
+        email, 
+        password,
+        options: { data: { full_name: fullName } }
+      });
+
+      btn.textContent = 'إنشاء حساب جديد'; btn.disabled = false;
+      if (error) showError('خطأ: ' + error.message);
+      else alert('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.');
+    }
+
+    async function handleLogout() {
+      await supabaseClient.auth.signOut();
+    }
+
+    // ============================================
+    // 5. إنشاء شركة
+    // ============================================
+    async function handleCreateCompany() {
+      const name = document.getElementById('newCompanyName').value;
+      if (!name) return alert('أدخل اسم الشركة');
+
+      const btn = event.target;
+      btn.textContent = 'جاري الإنشاء...'; btn.disabled = true;
+
+      const { error } = await supabaseClient.rpc('create_new_company', { p_name: name });
+      
+      btn.textContent = 'إنشاء الشركة'; btn.disabled = false;
+      if (error) alert('خطأ: ' + error.message);
+      else checkUserMembership(); // إعادة التحقق
+    }
+
+    // ============================================
+    // 6. التحقق من حالة المستخدم (هل عنده شركة؟)
+    // ============================================
+    async function checkUserMembership() {
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) return showScreen('auth-screen');
+
+      // هنجيب العضوية
+      const { data: members, error } = await supabaseClient
+        .from('members')
+        .select('role, companies(name)')
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .limit(1);
+
+      showScreen('app-screen');
+
+      if (error || !members || members.length === 0) {
+        // مفيش شركة
+        document.getElementById('no-company-section').classList.remove('hidden');
+        document.getElementById('dashboard-section').classList.add('hidden');
+      } else {
+        // عنده شركة
+        document.getElementById('no-company-section').classList.add('hidden');
+        document.getElementById('dashboard-section').classList.remove('hidden');
+        
+        const roleMap = {
+          'owner': 'مالك الشركة',
+          'accountant': 'محاسب',
+          'supervisor': 'مشرف موقع',
+          'storekeeper': 'أمين مخزن',
+          'engineer': 'مهندس'
+        };
+
+        document.getElementById('display-company-name').textContent = members[0].companies.name;
+        document.getElementById('display-role').textContent = roleMap[members[0].role] || members[0].role;
+      }
+    }
+
+    // ============================================
+    // 7. بدء التطبيق وتتبع حالة الجلسة
+    // ============================================
+    supabaseClient.auth.onAuthStateChange((event, session) => {
+      if (session) checkUserMembership();
+      else showScreen('auth-screen');
+    });
+
+    // تشغيل أولي
+    checkUserMembership();
+
+  </script>
+</body>
+</html>
