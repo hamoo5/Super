@@ -2,102 +2,127 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>مستشار HR — اختبار الاتصال</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<title>مستشار HR</title>
 <style>
   :root{
     --bg:#f5f7fb; --card:#fff; --ink:#0f172a; --muted:#6b7a90; --line:#e6ebf2;
-    --brand:#0f766e; --on-brand:#fff; --danger:#e11d48; --ok:#15803d;
+    --brand:#0f766e; --on-brand:#fff; --brand-soft:#e6f4f1; --danger:#e11d48;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{
-    margin:0; min-height:100dvh;
-    font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
-    background:var(--bg); color:var(--ink); font-size:15px;
-    display:grid; place-items:center; padding:24px 16px;
+    margin:0; min-height:100dvh; background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; font-size:15px;
+    padding-bottom:24px;
   }
-  .card{
-    width:100%; max-width:400px; background:var(--card);
-    border:1px solid var(--line); border-radius:20px; padding:26px 22px;
-    box-shadow:0 10px 30px -18px rgba(16,24,40,.25);
+  [hidden]{display:none !important}
+  .wrap{max-width:600px; margin:0 auto; padding:0 14px}
+  
+  /* الترويسة */
+  .app-header{
+    position:sticky; top:0; z-index:50; background:var(--bg);
+    border-bottom:1px solid var(--line); padding-top:env(safe-area-inset-top);
   }
-  .logo{
-    width:54px; height:54px; border-radius:16px;
-    background:var(--brand); color:var(--on-brand);
-    display:grid; place-items:center; font-weight:800; font-size:17px;
-    margin-bottom:16px;
-  }
-  h1{font-size:20px; margin:0 0 4px}
-  .sub{color:var(--muted); font-size:13px; margin:0 0 18px}
-  label{display:grid; gap:6px; margin-bottom:12px; font-size:12.5px; font-weight:700; color:var(--muted)}
-  input{
-    width:100%; padding:12px; border:1px solid var(--line); border-radius:12px;
-    background:var(--card); color:var(--ink); font:inherit; font-size:15px;
-  }
-  input:focus{outline:2px solid var(--brand); outline-offset:1px; border-color:transparent}
-  button{
-    width:100%; min-height:46px; padding:12px; border:0; border-radius:12px;
-    background:var(--brand); color:var(--on-brand);
-    font:inherit; font-weight:700; font-size:15px; cursor:pointer; margin-top:6px;
-  }
-  button:disabled{opacity:.55; pointer-events:none}
-  .err{color:var(--danger); font-size:13px; font-weight:700; min-height:20px; margin-top:8px}
-  .ok{color:var(--ok)}
-  .info{font-size:14px; line-height:1.7}
-  .info b{color:var(--brand)}
-  .tag{
-    display:inline-block; background:#e6f4f1; color:var(--brand);
-    padding:4px 10px; border-radius:999px; font-size:12.5px; font-weight:700; margin-top:8px;
-  }
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:12px 0 8px}
+  .brand{display:flex; align-items:center; gap:8px; font-weight:800; font-size:15px}
+  .logo{width:32px; height:32px; border-radius:10px; background:var(--brand); color:var(--on-brand); display:grid; place-items:center; font-size:13px}
+  .icon-btn{border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:10px; padding:6px 12px; font:inherit; font-size:13px; font-weight:700; cursor:pointer}
+  
+  /* مبدل الشركات */
+  .switcher{display:flex; gap:8px; padding-bottom:12px}
+  .switcher select{flex:1; appearance:none; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:11px 14px; font:inherit; font-weight:700; font-size:14px; color:var(--ink)}
+  .add-btn{width:44px; border-radius:12px; border:0; background:var(--brand); color:var(--on-brand); font-size:22px; font-weight:600; cursor:pointer; display:grid; place-items:center}
+
+  /* المحتوى */
+  .card{background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,.03); padding:20px; margin-bottom:12px}
+  .hero{display:flex; align-items:center; justify-content:space-between; gap:12px}
+  .hero-title{font-size:18px; font-weight:800}
+  .hero-badge{background:var(--brand-soft); color:var(--brand); font-weight:800; font-size:13px; padding:6px 12px; border-radius:999px}
+
+  /* شاشة الدخول */
+  .login-wrap{min-height:100dvh; display:grid; place-items:center; padding:24px 16px; background:radial-gradient(120% 80% at 50% 0%, var(--brand-soft) 0%, var(--bg) 55%)}
+  .login-card{width:100%; max-width:400px; background:var(--card); border:1px solid var(--line); border-radius:22px; box-shadow:0 10px 30px -18px rgba(16,24,40,.25); padding:26px 22px}
+  .login-card .logo{width:54px; height:54px; border-radius:16px; font-size:17px; margin-bottom:14px}
+  .login-card h1{font-size:21px; margin:0 0 4px}
+  .err{color:var(--danger); font-size:13px; font-weight:700; min-height:20px; margin-top:6px}
+  .form{display:grid; gap:12px}
+  .form label{display:grid; gap:6px; font-size:12.5px; font-weight:700; color:var(--muted)}
+  .form input{width:100%; padding:12px; border:1px solid var(--line); border-radius:12px; background:var(--card); color:var(--ink); font:inherit; font-size:15px}
+  .btn{display:inline-flex; align-items:center; justify-content:center; width:100%; border:0; border-radius:12px; padding:12px; font:inherit; font-weight:700; font-size:15px; cursor:pointer; background:var(--brand); color:var(--on-brand); margin-top:6px}
+  .btn:disabled{opacity:.55; pointer-events:none}
+  
+  /* مودال */
+  .modal{position:fixed; inset:0; z-index:100; display:none; align-items:flex-end; justify-content:center; background:rgba(15,23,42,.45); backdrop-filter:blur(2px)}
+  .modal.open{display:flex}
+  .modal-sheet{background:var(--card); width:100%; max-width:560px; border-radius:20px 20px 0 0; padding:20px; max-height:92vh; overflow:auto; animation:up .22s ease; padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+  @keyframes up{from{transform:translateY(26px);opacity:.5}to{transform:none;opacity:1}}
+  .modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px}
+  .modal-foot{display:flex; gap:10px; margin-top:16px}
+  .modal-foot .btn{flex:1}
+  .btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line)}
 </style>
 </head>
 <body>
 
-<!-- =============== شاشة الدخول =============== -->
-<div class="card" id="loginCard">
-  <div class="logo">HR</div>
-  <h1>تسجيل الدخول</h1>
-  <p class="sub">الخطوة 1: التأكد من الاتصال بقاعدة البيانات</p>
-
-  <form id="loginForm">
-    <label>البريد الإلكتروني
-      <input id="email" type="email" inputmode="email" autocomplete="email" required placeholder="you@example.com">
-    </label>
-    <label>كلمة المرور
-      <input id="password" type="password" autocomplete="current-password" required placeholder="••••••••">
-    </label>
-    <button id="loginBtn" type="submit">دخول</button>
-    <div class="err" id="errMsg"></div>
-  </form>
+<!-- شاشة الدخول -->
+<div id="loginScreen" hidden>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo">HR</div>
+      <h1>مستشار الموارد البشرية</h1>
+      <p style="color:var(--muted); font-size:13px; margin:0 0 18px">سجّل دخولك لإدارة شركاتك</p>
+      <form id="loginForm" class="form">
+        <label>البريد الإلكتروني<input id="email" type="email" required></label>
+        <label>كلمة المرور<input id="password" type="password" required></label>
+        <button class="btn" id="loginBtn" type="submit">تسجيل الدخول</button>
+        <div class="err" id="errMsg"></div>
+      </form>
+    </div>
+  </div>
 </div>
 
-<!-- =============== شاشة النجاح =============== -->
-<div class="card" id="appCard" hidden>
-  <div class="logo">✓</div>
-  <h1>الاتصال شغّال 🎉</h1>
-  <p class="sub">تم تسجيل الدخول وقراءة البيانات من Supabase</p>
-  <div class="info">
-    <div>المستخدم: <b id="userEmail">—</b></div>
-    <div>عدد شركاتك: <b id="companiesCount">—</b></div>
-    <div id="companiesList" style="margin-top:10px"></div>
+<!-- التطبيق -->
+<div id="app" hidden>
+  <header class="app-header">
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand"><div class="logo">HR</div><span>مستشار HR</span></div>
+        <button class="icon-btn" id="logoutBtn">خروج</button>
+      </div>
+      <div class="switcher">
+        <select id="companySelect"></select>
+        <button class="add-btn" id="addCompanyBtn">+</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding-top:16px">
+    <div id="radarContent"></div>
+  </main>
+</div>
+
+<!-- المودال -->
+<div class="modal" id="modal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h3 id="modalTitle" style="margin:0; font-size:16px"></h3>
+      <button class="icon-btn" onclick="closeModal()">إغلاق</button>
+    </div>
+    <div id="modalBody"></div>
+    <div class="modal-foot" id="modalFooter"></div>
   </div>
-  <button id="logoutBtn" style="background:transparent;color:var(--ink);border:1px solid var(--line);margin-top:16px">خروج</button>
 </div>
 
 <script>
-/* ============================================================
-   ⚙️  الإعدادات (تم تحديث الرابط بنجاح)
-   ============================================================ */
+/* 1) الإعدادات */
 const CONFIG = {
   SUPABASE_URL: 'https://qdqecfaozbxivlwbinew.supabase.co',
   SUPABASE_KEY: 'sb_publishable_EK-n56uXsI94eiGWhH25sQ_Toj32Oho'
 };
 
-/* ============================================================
-   🪛  أدوات مساعدة
-   ============================================================ */
+/* 2) أدوات */
 const $ = (s) => document.querySelector(s);
-
 const store = {
   get() { try { return JSON.parse(localStorage.getItem('hr_session') || 'null'); } catch { return null; } },
   set(v) { v ? localStorage.setItem('hr_session', JSON.stringify(v)) : localStorage.removeItem('hr_session'); }
@@ -105,143 +130,157 @@ const store = {
 
 async function authCall(path, body) {
   const res = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'apikey': CONFIG.SUPABASE_KEY },
-    body: JSON.stringify(body)
+    method: 'POST', headers: { 'Content-Type': 'application/json', 'apikey': CONFIG.SUPABASE_KEY }, body: JSON.stringify(body)
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error_description || data.msg || data.message || 'تعذر إتمام الطلب');
+  if (!res.ok) throw new Error(data.error_description || data.msg || 'خطأ في الدخول');
   return data;
 }
 
 async function signIn(email, password) {
   const d = await authCall('token?grant_type=password', { email, password });
-  store.set({
-    access_token: d.access_token,
-    refresh_token: d.refresh_token,
-    user: d.user,
-    expires_at: Date.now() + (d.expires_in || 3600) * 1000
-  });
+  store.set({ access_token: d.access_token, refresh_token: d.refresh_token, user: d.user, expires_at: Date.now() + (d.expires_in || 3600) * 1000 });
   return d.user;
 }
 
 async function refreshSession() {
   const s = store.get();
-  if (!s?.refresh_token) throw new Error('NO_SESSION');
   const d = await authCall('token?grant_type=refresh_token', { refresh_token: s.refresh_token });
-  store.set({ ...s, access_token: d.access_token, refresh_token: d.refresh_token,
-              expires_at: Date.now() + (d.expires_in || 3600) * 1000 });
+  store.set({ ...s, access_token: d.access_token, refresh_token: d.refresh_token, expires_at: Date.now() + (d.expires_in || 3600) * 1000 });
 }
 
-async function signOut() {
-  const s = store.get();
-  if (s?.access_token) {
-    try {
-      await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/logout`, {
-        method: 'POST',
-        headers: { apikey: CONFIG.SUPABASE_KEY, Authorization: 'Bearer ' + s.access_token }
-      });
-    } catch {}
-  }
-  store.set(null);
-}
-
-/* استدعاء REST — مع تجديد تلقائي للتوكن */
 async function api(path, opts = {}, retry = true) {
   const { method = 'GET', body } = opts;
   const s = store.get();
-  const token = s?.access_token || CONFIG.SUPABASE_KEY;
-
-  const headers = {
-    'apikey': CONFIG.SUPABASE_KEY,
-    'Authorization': 'Bearer ' + token,
-    'Accept': 'application/json'
-  };
+  const headers = { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + (s?.access_token || CONFIG.SUPABASE_KEY), 'Accept': 'application/json' };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (method !== 'GET') headers['Prefer'] = 'return=representation';
 
-  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${path}`, {
-    method, headers,
-    body: body !== undefined ? JSON.stringify(body) : undefined
-  });
-
+  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  
   if (res.status === 401 && retry && s) {
-    try { await refreshSession(); }
-    catch { store.set(null); showLogin(); throw new Error('انتهت الجلسة، سجّل الدخول من جديد'); }
+    try { await refreshSession(); } catch { store.set(null); location.reload(); }
     return api(path, opts, false);
   }
-
   const text = await res.text();
   const data = text ? JSON.parse(text) : null;
-  if (!res.ok) throw new Error(data?.message || data?.details || data?.hint || 'خطأ في الاتصال بقاعدة البيانات');
+  if (!res.ok) throw new Error(data?.message || 'خطأ في قاعدة البيانات');
   return data;
 }
 
-/* ============================================================
-   🎬  التطبيق
-   ============================================================ */
-function showLogin() {
-  $('#loginCard').hidden = false;
-  $('#appCard').hidden = true;
+function openModal(title, body, footer) {
+  $('#modalTitle').textContent = title;
+  $('#modalBody').innerHTML = body;
+  $('#modalFooter').innerHTML = footer;
+  $('#modal').classList.add('open');
 }
+function closeModal() { $('#modal').classList.remove('open'); }
 
-async function showApp(user) {
-  $('#loginCard').hidden = true;
-  $('#appCard').hidden = false;
-  $('#userEmail').textContent = user.email || '—';
+/* 3) الحالة */
+const state = { user: null, companies: [], currentCompany: null };
 
-  try {
-    const companies = await api(`companies?select=*&owner_id=eq.${user.id}&order=name.asc`);
-    $('#companiesCount').textContent = companies.length;
-    if (companies.length) {
-      $('#companiesList').innerHTML = companies
-        .map(c => `<div class="tag">${c.name}</div>`)
-        .join(' ');
-    } else {
-      $('#companiesList').innerHTML =
-        `<div style="color:var(--muted);font-size:13px">لا توجد شركات بعد — هنضيفها في الخطوة 2</div>`;
-    }
-  } catch (e) {
-    $('#companiesList').innerHTML =
-      `<div style="color:var(--danger);font-size:13px">فشل قراءة الشركات: ${e.message}</div>`;
+/* 4) التشغيل */
+async function startApp(user) {
+  state.user = user;
+  $('#loginScreen').hidden = true;
+  $('#app').hidden = false;
+  
+  await loadCompanies();
+  if (state.companies.length > 0) {
+    selectCompany(state.companies[0].id);
+  } else {
+    renderSwitcher();
+    $('#radarContent').innerHTML = `<div class="card" style="text-align:center; color:var(--muted)">لا توجد شركات.<br>اضغط <b>+</b> لإضافة أول شركة.</div>`;
   }
 }
 
-/* ---- الدخول ---- */
+async function loadCompanies() {
+  state.companies = await api(`companies?select=*&owner_id=eq.${state.user.id}&order=name.asc`);
+}
+
+function renderSwitcher() {
+  const sel = $('#companySelect');
+  sel.innerHTML = state.companies.length ? state.companies.map(c => `<option value="${c.id}">${c.name}</option>`).join('') : `<option>لا توجد شركات</option>`;
+  if (state.currentCompany) sel.value = state.currentCompany.id;
+}
+
+function selectCompany(id) {
+  state.currentCompany = state.companies.find(c => c.id === id);
+  renderSwitcher();
+  renderRadar();
+}
+
+function renderRadar() {
+  const c = state.currentCompany;
+  if (!c) return;
+  $('#radarContent').innerHTML = `
+    <div class="card hero">
+      <div>
+        <div class="hero-title">${c.name}</div>
+        <div style="color:var(--muted); font-size:13px">${c.activity_type || 'بدون نشاط محدد'}</div>
+      </div>
+      <div class="hero-badge">${c.currency || 'SAR'}</div>
+    </div>
+    <div class="card" style="text-align:center; color:var(--muted); font-size:13px; margin-top:20px">
+      هنا ستظهر إحصائيات الرادار (الموظفين، الحضور، العقود) في الخطوات القادمة.
+    </div>
+  `;
+}
+
+/* 5) إضافة شركة */
+$('#addCompanyBtn').addEventListener('click', () => {
+  openModal('إضافة شركة جديدة', `
+    <form id="coForm" class="form">
+      <label>اسم الشركة *<input name="name" required placeholder="مثال: شركة الأفق"></label>
+      <label>نشاط الشركة<input name="activity_type" placeholder="تجارة / مقاولات..."></label>
+      <label>العملة<input name="currency" value="SAR" maxlength="5"></label>
+    </form>
+  `, `<button class="btn ghost" onclick="closeModal()">إلغاء</button><button class="btn" onclick="saveCompany()">حفظ</button>`);
+});
+
+async function saveCompany() {
+  const f = $('#coForm');
+  if (!f.reportValidity()) return;
+  const fd = new FormData(f);
+  try {
+    await api('companies', { method: 'POST', body: {
+      name: fd.get('name').trim(),
+      activity_type: fd.get('activity_type').trim(),
+      currency: fd.get('currency').toUpperCase() || 'SAR',
+      owner_id: state.user.id
+    }});
+    closeModal();
+    await loadCompanies();
+    selectCompany(state.companies.find(c => c.name === fd.get('name').trim())?.id || state.companies[0].id);
+  } catch (e) { alert(e.message); }
+}
+
+/* 6) الأحداث الأساسية */
+$('#companySelect').addEventListener('change', (e) => selectCompany(e.target.value));
+$('#modal').addEventListener('click', (e) => { if(e.target.id === 'modal') closeModal(); });
+
 $('#loginForm').addEventListener('submit', async (ev) => {
   ev.preventDefault();
-  const btn = $('#loginBtn');
-  const err = $('#errMsg');
-  btn.disabled = true; btn.textContent = 'جارٍ الدخول…';
-  err.textContent = ''; err.classList.remove('ok');
-
+  const btn = $('#loginBtn'); const err = $('#errMsg');
+  btn.disabled = true; btn.textContent = 'جارٍ...'; err.textContent = '';
   try {
     const user = await signIn($('#email').value.trim(), $('#password').value);
-    err.textContent = '✓ تم الدخول';
-    err.classList.add('ok');
-    await showApp(user);
+    await startApp(user);
   } catch (e) {
-    err.textContent = e.message || 'تعذر تسجيل الدخول';
-  } finally {
-    btn.disabled = false; btn.textContent = 'دخول';
-  }
+    err.textContent = e.message;
+  } finally { btn.disabled = false; btn.textContent = 'تسجيل الدخول'; }
 });
 
-/* ---- الخروج ---- */
-$('#logoutBtn').addEventListener('click', async () => {
-  await signOut();
-  showLogin();
-});
+$('#logoutBtn').addEventListener('click', () => { store.set(null); location.reload(); });
 
-/* ---- استئناف الجلسة عند إعادة التحميل ---- */
+/* استئناف الجلسة */
 (async function boot() {
   const s = store.get();
-  if (!s?.access_token) return showLogin();
-  if (s.expires_at && s.expires_at < Date.now() + 60000) {
-    try { await refreshSession(); }
-    catch { store.set(null); return showLogin(); }
+  if (!s?.access_token) return $('#loginScreen').hidden = false;
+  if (s.expires_at < Date.now() + 60000) {
+    try { await refreshSession(); } catch { store.set(null); return $('#loginScreen').hidden = false; }
   }
-  showApp(store.get().user);
+  startApp(store.get().user);
 })();
 </script>
 </body>
