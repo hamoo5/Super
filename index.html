@@ -13,6 +13,7 @@
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{ margin:0; min-height:100dvh; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; font-size:15px; padding-bottom:80px; }
+  body.portal-mode{padding-bottom:24px}
   [hidden]{display:none !important}
   .wrap{max-width:600px; margin:0 auto; padding:0 14px}
   
@@ -40,13 +41,15 @@
   .row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line)}
   .row:last-child{border-bottom:0; padding-bottom:0}
   .avatar{width:40px; height:40px; border-radius:12px; background:var(--brand-soft); color:var(--brand); display:grid; place-items:center; font-weight:800; flex:none}
-  .row-main{flex:1}
-  .row-main b{display:block; font-size:14px}
+  .row-main{flex:1; min-width:0}
+  .row-main b{display:block; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .row-main small{display:block; color:var(--muted); font-size:12px}
 
   .btn-sm{background:var(--brand-soft); color:var(--brand); border:0; padding:8px 12px; border-radius:8px; font:inherit; font-size:12px; font-weight:700; cursor:pointer}
   .btn-sm.wa{background:var(--ok-soft); color:var(--ok)}
   .btn-sm.ghost{background:var(--card); border:1px solid var(--line); color:var(--danger)}
+  .btn-sm.ok{background:var(--ok); color:#fff}
+  .btn-sm.bad{background:var(--danger-soft); color:var(--danger)}
 
   nav.tabs{position:fixed; bottom:0; left:0; right:0; z-index:50; background:var(--card); border-top:1px solid var(--line); display:flex; padding-bottom:env(safe-area-inset-bottom)}
   nav.tabs button{flex:1; background:none; border:0; padding:10px 2px; color:var(--muted); font:inherit; font-size:10px; font-weight:700; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer}
@@ -76,10 +79,18 @@
   .modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px}
   .modal-foot{display:flex; gap:10px; margin-top:16px}
   .modal-foot .btn{flex:1}
+
+  /* ستايل البوابة */
+  .portal-wrap{max-width:480px; margin:0 auto; padding:24px 16px}
+  .portal-card{background:var(--card); border:1px solid var(--line); border-radius:20px; padding:24px; text-align:center; margin-bottom:14px}
+  .portal-logo{width:60px; height:60px; border-radius:16px; background:var(--brand); color:var(--on-brand); display:grid; place-items:center; font-weight:800; font-size:18px; margin:0 auto 16px}
+  .portal-card h1{font-size:20px; margin:0 0 4px}
+  .portal-card p{color:var(--muted); font-size:14px; margin:0 0 16px}
 </style>
 </head>
 <body>
 
+<!-- شاشة الدخول والتسجيل -->
 <div id="loginScreen" hidden>
   <div class="login-wrap">
     <div class="login-card">
@@ -126,6 +137,45 @@
   </div>
 </div>
 
+<!-- واجهة الموظف (البوابة السحرية) -->
+<div id="portalScreen" hidden>
+  <div class="portal-wrap">
+    <div class="portal-card">
+      <div class="portal-logo">HR</div>
+      <h1 id="portalEmpName">جاري التحميل...</h1>
+      <p id="portalCompany">...</p>
+      <div class="hero-badge" id="portalLeaveBalance" style="margin-top:10px">رصيد الإجازات: ...</div>
+    </div>
+    
+    <div class="card">
+      <div class="sec-title">تسجيل الحضور</div>
+      <div id="portalAttStatus" style="font-size:13px; color:var(--muted); margin-bottom:10px">جاري التحقق من حضورك...</div>
+      <button class="btn" id="btnPortalCheckIn" onclick="portalCheckIn()">📍 تسجيل حضور اليوم</button>
+    </div>
+
+    <div class="card">
+      <div class="sec-title">طلب إجازة</div>
+      <form id="portalLeaveForm" class="form">
+        <label>نوع الإجازة
+          <select id="portalLeaveType">
+            <option value="سنوية">سنوية</option>
+            <option value="مرضية">مرضية</option>
+            <option value="طارئة">طارئة</option>
+            <option value="بدون راتب">بدون راتب</option>
+          </select>
+        </label>
+        <div class="grid2">
+          <label>من تاريخ<input type="date" id="portalLeaveStart" required></label>
+          <label>إلى تاريخ<input type="date" id="portalLeaveEnd" required></label>
+        </div>
+        <button type="submit" class="btn ghost" id="btnPortalLeave">إرسال الطلب للمدير</button>
+      </form>
+      <div class="err" id="portalLeaveErr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- التطبيق (للمستشار) -->
 <div id="app" hidden>
   <header class="app-header">
     <div class="wrap">
@@ -156,7 +206,8 @@
     </section>
 
     <section id="view-leaves" hidden>
-       <div class="card" style="text-align:center;color:var(--muted)">شاشة الإجازات (سنضيفها في الخطوة القادمة)</div>
+      <div class="sec-title">طلبات الإجازة</div>
+      <div id="leavesList" class="card"></div>
     </section>
 
     <section id="view-payroll" hidden>
@@ -242,19 +293,34 @@ async function refreshSession() {
 async function api(path, opts = {}, retry = true) {
   const { method = 'GET', body } = opts;
   const s = store.get();
-  const headers = { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + (s?.access_token || CONFIG.SUPABASE_KEY), 'Accept': 'application/json' };
+  // البوابة بتستخدم الـ anon key عشان الموظف مش مسجل دخول
+  const isPortal = !s?.access_token || location.search.includes('portal=');
+  const token = isPortal ? CONFIG.SUPABASE_KEY : s.access_token;
+
+  const headers = { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + token, 'Accept': 'application/json' };
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (method !== 'GET') headers['Prefer'] = 'return=representation';
 
   const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
   
-  if (res.status === 401 && retry && s) {
+  if (res.status === 401 && retry && !isPortal) {
     try { await refreshSession(); } catch { store.set(null); location.reload(); }
     return api(path, opts, false);
   }
   const text = await res.text();
   const data = text ? JSON.parse(text) : null;
   if (!res.ok) throw new Error(data?.message || 'خطأ في قاعدة البيانات');
+  return data;
+}
+
+async function rpc(fn, args) {
+  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+    method: 'POST',
+    headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify(args)
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'خطأ');
   return data;
 }
 
@@ -266,7 +332,7 @@ function openModal(title, body, footer) {
 }
 function closeModal() { $('#modal').classList.remove('open'); }
 
-const state = { user: null, companies: [], currentCompany: null, employees: [], attendance: [], payrolls: [], view: 'radar' };
+const state = { user: null, companies: [], currentCompany: null, employees: [], attendance: [], payrolls: [], leaves: [], view: 'radar' };
 const today = new Date().toISOString().split('T')[0];
 const currentMonth = new Date().toISOString().slice(0, 7);
 
@@ -279,6 +345,7 @@ function switchView(view) {
   if (view === 'radar') renderRadar();
   if (view === 'employees') renderEmployees();
   if (view === 'attendance') renderAttendance();
+  if (view === 'leaves') renderLeaves();
   if (view === 'payroll') renderPayroll();
 }
 
@@ -292,6 +359,7 @@ async function startApp(user) {
   state.user = user;
   $('#loginScreen').hidden = true;
   $('#app').hidden = false;
+  document.body.classList.remove('portal-mode');
   
   await loadCompanies();
   if (state.companies.length > 0) {
@@ -325,6 +393,7 @@ async function loadData() {
   const cid = state.currentCompany.id;
   state.employees = await api(`employees?select=*&company_id=eq.${cid}&order=full_name.asc`);
   state.attendance = await api(`attendance?select=*&company_id=eq.${cid}&work_date=eq.${today}`);
+  state.leaves = await api(`leave_requests?select=*&company_id=eq.${cid}&order=start_date.desc`);
   state.payrolls = await api(`payrolls?select=*&company_id=eq.${cid}&month_year=eq.${currentMonth}`);
   $('#payMonth').value = currentMonth;
 }
@@ -333,6 +402,8 @@ function renderRadar() {
   const c = state.currentCompany;
   if (!c) return;
   const totalSalary = state.employees.reduce((s, e) => s + (Number(e.base_salary) || 0), 0);
+  const pendingLeaves = state.leaves.filter(l => l.status === 'pending').length;
+  
   $('#view-radar').innerHTML = `
     <div class="card hero">
       <div>
@@ -344,10 +415,13 @@ function renderRadar() {
     <div class="stats">
       <div class="stat"><b>${state.employees.length}</b><small>إجمالي الموظفين</small></div>
       <div class="stat"><b>${totalSalary.toLocaleString()}</b><small>إجمالي الأساسي</small></div>
+      <div class="stat"><b>${state.attendance.length}</b><small>حضور اليوم</small></div>
+      <div class="stat"><b>${pendingLeaves}</b><small>إجازات معلقة</small></div>
     </div>
   `;
 }
 
+/* الموظفين */
 function renderEmployees() {
   if (!state.currentCompany) return;
   $('#view-employees').innerHTML = `
@@ -361,10 +435,21 @@ function renderEmployees() {
             <b>${e.full_name}</b>
             <small>${e.job_title || 'بدون وظيفة'} · ${Number(e.base_salary).toLocaleString()} ${state.currentCompany.currency}</small>
           </div>
+          <button class="btn-sm" onclick="copyPortalLink('${e.id}')">نسخ الرابط</button>
         </div>
       `).join('') : '<div style="text-align:center; color:var(--muted); font-size:13px">لا يوجد موظفين مسجلين</div>'}
     </div>
   `;
+}
+
+function copyPortalLink(empId) {
+  const base = window.location.origin + window.location.pathname;
+  const link = `${base}?portal=${empId}`;
+  navigator.clipboard.writeText(link).then(() => {
+    alert('تم نسخ الرابط! ابعته للموظف عشان يسجل حضوره ويطلب إجازاته.');
+  }).catch(() => {
+    prompt('انسخ الرابط ده وابعته للموظف:', link);
+  });
 }
 
 function openEmployeeForm() {
@@ -403,6 +488,7 @@ async function saveEmployee() {
   } catch (e) { alert(e.message); }
 }
 
+/* الحضور */
 function renderAttendance() {
   if (!state.currentCompany) return;
   $('#attDateBadge').textContent = today;
@@ -435,9 +521,7 @@ async function toggleAttendance(empId, isPresent) {
         state.attendance = state.attendance.filter(a => a.id !== rec.id);
       }
     } else {
-      // هنا التعديل: نرسل تاريخ ووقت كاملين باستخدام toISOString
       const time = new Date().toISOString(); 
-      
       const res = await api('attendance', { method: 'POST', body: {
         company_id: state.currentCompany.id,
         employee_id: empId,
@@ -445,20 +529,55 @@ async function toggleAttendance(empId, isPresent) {
         check_in: time,
         work_mode: 'office'
       }});
-      
-      if (res && res.length > 0) {
-        state.attendance.push(res[0]);
-      } else {
-        await loadData();
-      }
+      if (res && res.length > 0) state.attendance.push(res[0]);
     }
-  } catch (error) {
-    alert("خطأ في تسجيل الحضور: " + (error.message || "تأكد من الصلاحيات"));
-    console.error(error);
-  }
+  } catch (error) { alert("خطأ: " + error.message); }
   renderAttendance();
+  renderRadar(); // تحديث إحصائيات الرادار
 }
 
+/* الإجازات (للمستشار) */
+function renderLeaves() {
+  if (!state.currentCompany) return;
+  
+  $('#leavesList').innerHTML = state.leaves.length ? state.leaves.map(l => {
+    const emp = state.employees.find(e => e.id === l.employee_id);
+    let statusBadge = '';
+    if(l.status === 'pending') statusBadge = '<span style="color:var(--amber); font-weight:700">⏳ معلقة</span>';
+    else if(l.status === 'approved') statusBadge = '<span style="color:var(--ok); font-weight:700">✅ معتمدة</span>';
+    else statusBadge = '<span style="color:var(--danger); font-weight:700">❌ مرفوضة</span>';
+
+    return `
+      <div class="row" style="flex-wrap:wrap; gap:8px">
+        <div class="avatar">${emp ? emp.full_name.charAt(0) : '?'}</div>
+        <div class="row-main">
+          <b>${emp ? emp.full_name : 'موظف محذوف'} <small>(${l.leave_type})</small></b>
+          <small>من ${l.start_date} إلى ${l.end_date} (${l.days_count} يوم)</small>
+        </div>
+        <div style="width:100%; display:flex; justify-content:space-between; align-items:center; margin-top:5px">
+          ${statusBadge}
+          ${l.status === 'pending' ? `
+            <div style="display:flex; gap:6px">
+              <button class="btn-sm ok" onclick="updateLeaveStatus('${l.id}', 'approved')">موافقة</button>
+              <button class="btn-sm bad" onclick="updateLeaveStatus('${l.id}', 'rejected')">رفض</button>
+            </div>
+          ` : ''}
+        </div>
+      </div>
+    `;
+  }).join('') : '<div style="text-align:center; color:var(--muted); font-size:13px">لا توجد طلبات إجازة</div>';
+}
+
+async function updateLeaveStatus(leaveId, status) {
+  try {
+    await api(`leave_requests?id=eq.${leaveId}`, { method: 'PATCH', body: { status } });
+    await loadData();
+    renderLeaves();
+    renderRadar();
+  } catch (error) { alert('خطأ في التحديث: ' + error.message); }
+}
+
+/* الرواتب */
 async function renderPayroll() {
   if (!state.currentCompany) return;
   const month = $('#payMonth').value || currentMonth;
@@ -510,18 +629,103 @@ function sendWhatsApp(payrollId) {
   const p = state.payrolls.find(x => x.id === payrollId);
   if(!p) return;
   const emp = state.employees.find(e => e.id === p.employee_id);
-  
-  if(!emp) return alert('الموظف غير موجود');
-  if(!emp.phone) return alert('⚠️ رقم الجوال غير مسجل لهذا الموظف. يرجى تعديل بيانات الموظف وإضافة رقمه أولاً.');
+  if(!emp || !emp.phone) return alert('⚠️ رقم الجوال غير مسجل لهذا الموظف.');
   
   let phone = emp.phone.replace(/\D/g, '');
   if (phone.startsWith('0')) phone = '966' + phone.slice(1);
   
   const msg = `مرحباً ${emp.full_name}،\nتفاصيل راتب شهر ${p.month_year}:\n- الأساسي: ${Number(p.base_salary).toLocaleString()} ${state.currentCompany.currency}\n- الصافي: *${Number(p.net_salary).toLocaleString()} ${state.currentCompany.currency}*\n\nمع تحيات ${state.currentCompany.name}`;
-  
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
+/* البوابة (الموظف) */
+async function initPortal(empId) {
+  document.body.classList.add('portal-mode');
+  $('#loginScreen').hidden = true;
+  $('#app').hidden = true;
+  $('#portalScreen').hidden = false;
+
+  try {
+    const data = await rpc('get_employee_portal', { p_id: empId });
+    if (!data || data.length === 0) throw new Error('رابط غير صالح');
+    
+    const emp = data[0];
+    state.currentCompany = { id: emp.company_id, name: emp.company_name, currency: 'SAR' }; // للاستخدام الداخلي
+    $('#portalEmpName').textContent = emp.full_name;
+    $('#portalCompany').textContent = emp.company_name;
+    $('#portalLeaveBalance').textContent = `رصيد الإجازات: ${emp.annual_leave_balance} يوم`;
+    state.portalEmpId = empId;
+
+    // التحقق من الحضور
+    const att = await api(`attendance?select=*&employee_id=eq.${empId}&work_date=eq.${today}`);
+    if (att && att.length > 0) {
+      $('#portalAttStatus').textContent = '✅你已经 سجلت حضورك اليوم';
+      $('#btnPortalCheckIn').disabled = true;
+      $('#btnPortalCheckIn').textContent = 'تم تسجيل الحضور';
+    } else {
+      $('#portalAttStatus').textContent = 'لم تسجل حضورك اليوم بعد.';
+    }
+
+  } catch (e) {
+    alert(e.message);
+    window.location.href = window.location.pathname; // مسح الرابط
+  }
+}
+
+async function portalCheckIn() {
+  const btn = $('#btnPortalCheckIn');
+  btn.disabled = true; btn.textContent = 'جاري التسجيل...';
+  try {
+    await api('attendance', { method: 'POST', body: {
+      company_id: state.currentCompany.id,
+      employee_id: state.portalEmpId,
+      work_date: today,
+      check_in: new Date().toISOString(),
+      work_mode: 'remote' // نفترض أنه عن بعد لأنه بيسجل من البوابة
+    }});
+    $('#portalAttStatus').textContent = '✅ تم تسجيل حضورك بنجاح!';
+    btn.textContent = 'تم تسجيل الحضور';
+  } catch(e) {
+    alert(e.message);
+    btn.disabled = false; btn.textContent = '📍 تسجيل حضور اليوم';
+  }
+}
+
+$('#portalLeaveForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('#btnPortalLeave');
+  btn.disabled = true; btn.textContent = 'جاري الإرسال...';
+  
+  const start = $('#portalLeaveStart').value;
+  const end = $('#portalLeaveEnd').value;
+  if(new Date(end) < new Date(start)) {
+    alert('تاريخ النهاية قبل البداية');
+    btn.disabled = false; btn.textContent = 'إرسال الطلب للمدير';
+    return;
+  }
+  
+  const days = Math.max(0, Math.round((new Date(end) - new Date(start)) / 864e5) + 1);
+
+  try {
+    await api('leave_requests', { method: 'POST', body: {
+      company_id: state.currentCompany.id,
+      employee_id: state.portalEmpId,
+      leave_type: $('#portalLeaveType').value,
+      start_date: start,
+      end_date: end,
+      days_count: days,
+      status: 'pending'
+    }});
+    alert('✅ تم إرسال طلب الإجازة للمدير بنجاح!');
+    $('#portalLeaveForm').reset();
+  } catch(e) {
+    alert('خطأ: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = 'إرسال الطلب للمدير';
+  }
+});
+
+/* إضافة شركة والدخول والخروج */
 $('#addCompanyBtn').addEventListener('click', () => {
   openModal('إضافة شركة جديدة', `
     <form id="coForm" class="form">
@@ -571,7 +775,15 @@ $('#registerForm').addEventListener('submit', async (ev) => {
 
 $('#logoutBtn').addEventListener('click', () => { store.set(null); location.reload(); });
 
+/* التشغيل */
 (async function boot() {
+  // التحقق من وجود رابط البوابة
+  const urlParams = new URLSearchParams(window.location.search);
+  const portalId = urlParams.get('portal');
+  if (portalId) {
+    return initPortal(portalId);
+  }
+
   const s = store.get();
   if (!s?.access_token) return $('#loginScreen').hidden = false;
   if (s.expires_at < Date.now() + 60000) {
