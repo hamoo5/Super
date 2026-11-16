@@ -12,11 +12,7 @@
     --ok:#15803d; --ok-soft:#e8f7ee;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  body{
-    margin:0; min-height:100dvh; background:var(--bg); color:var(--ink);
-    font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; font-size:15px;
-    padding-bottom:24px;
-  }
+  body{ margin:0; min-height:100dvh; background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; font-size:15px; padding-bottom:24px; }
   [hidden]{display:none !important}
   .wrap{max-width:600px; margin:0 auto; padding:0 14px}
   
@@ -122,6 +118,17 @@
         </div>
       </div>
 
+      <!-- 4. واجهة تعيين كلمة مرور جديدة (تظهر عند القدوم من الإيميل) -->
+      <div id="viewUpdatePassword" hidden>
+        <h1>تعيين كلمة مرور جديدة</h1>
+        <p style="color:var(--muted); font-size:13px; margin:0 0 18px">أدخل كلمة المرور الجديدة لحسابك</p>
+        <form id="updatePassForm" class="form">
+          <label>كلمة المرور الجديدة<input id="newPassword" type="password" required minlength="6"></label>
+          <button class="btn" id="updatePassBtn" type="submit">حفظ وتعيين</button>
+          <div class="err" id="updatePassErr"></div>
+        </form>
+      </div>
+
     </div>
   </div>
 </div>
@@ -188,12 +195,23 @@ async function signIn(email, password) {
 }
 
 async function signUp(email, password) {
-  // ملاحظة: إذا كان تأكيد البريد مفعل في سوبابيز، سيصل للمستخدم إيميل لتفعيل الحساب
   return await authCall('signup', { email, password });
 }
 
 async function resetPassword(email) {
   return await authCall('recover', { email });
+}
+
+// دالة تحديث كلمة المرور باستخدام التوكن المستخرج من الرابط
+async function updatePassword(newPassword, token) {
+  const res = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/user`, {
+    method: 'PUT',
+    headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: newPassword })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || 'حدث خطأ أثناء التحديث');
+  return data;
 }
 
 async function refreshSession() {
@@ -237,9 +255,11 @@ function toggleAuthView(view) {
   $('#viewLogin').hidden = view !== 'login';
   $('#viewRegister').hidden = view !== 'register';
   $('#viewForgot').hidden = view !== 'forgot';
+  $('#viewUpdatePassword').hidden = view !== 'update';
   $('#loginErr').textContent = '';
   $('#regErr').textContent = '';
   $('#forgotErr').textContent = '';
+  $('#updatePassErr').textContent = '';
 }
 
 /* 5) التشغيل */
@@ -318,7 +338,7 @@ async function saveCompany() {
   } catch (e) { alert(e.message); }
 }
 
-/* 7) الأحداث الأساسية (دخول، تسجيل، نسيت باسورد) */
+/* 7) الأحداث الأساسية (دخول، تسجيل، نسيت باسورد، تعيين باسورد) */
 $('#companySelect').addEventListener('change', (e) => selectCompany(e.target.value));
 $('#modal').addEventListener('click', (e) => { if(e.target.id === 'modal') closeModal(); });
 
@@ -366,10 +386,50 @@ $('#forgotForm').addEventListener('submit', async (ev) => {
   } finally { btn.disabled = false; btn.textContent = 'إرسال رابط الاستعادة'; }
 });
 
+// تعيين كلمة المرور الجديدة
+$('#updatePassForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const btn = $('#updatePassBtn'); const err = $('#updatePassErr');
+  btn.disabled = true; btn.textContent = 'جارٍ...'; err.textContent = '';
+  try {
+    // استخراج التوكن من الهاش (الرابط)
+    const hash = window.location.hash.substring(1);
+    const params = new URLSearchParams(hash);
+    const token = params.get('access_token');
+    if (!token) throw new Error('رابط غير صالح أو منتهي الصلاحية');
+    
+    await updatePassword($('#newPassword').value, token);
+    
+    // مسح الهاش من الرابط
+    window.history.replaceState(null, '', window.location.pathname);
+    
+    // الدخول تلقائياً بعد التحديث
+    const user = await signIn($('#forgotEmail').value || '', $('#newPassword').value); 
+    // (لو مفيش ايميل محفوظ هيطلب منه يدخل يدوي)
+    err.classList.add('ok');
+    err.textContent = 'تم تغيير كلمة المرور بنجاح!';
+    setTimeout(() => window.location.reload(), 1500);
+    
+  } catch (e) {
+    err.classList.remove('ok');
+    err.textContent = e.message;
+    btn.disabled = false; btn.textContent = 'حفظ وتعيين';
+  }
+});
+
 $('#logoutBtn').addEventListener('click', () => { store.set(null); location.reload(); });
 
-/* استئناف الجلسة */
+/* استئناف الجلسة أو قراءة رابط الإيميل */
 (async function boot() {
+  // 1. التحقق مما إذا كان المستخدم قادماً من رابط إعادة تعيين كلمة المرور
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token') && hash.includes('type=recovery')) {
+    $('#loginScreen').hidden = false;
+    toggleAuthView('update');
+    return;
+  }
+
+  // 2. التحقق من وجود جلسة سابقة
   const s = store.get();
   if (!s?.access_token) return $('#loginScreen').hidden = false;
   if (s.expires_at < Date.now() + 60000) {
