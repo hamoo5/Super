@@ -435,7 +435,7 @@ async function toggleAttendance(empId, isPresent) {
         state.attendance = state.attendance.filter(a => a.id !== rec.id);
       }
     } else {
-      // التعديل هنا: بعتنا تاريخ ووقت كاملين عشان الداتابيز تقبله
+      // هنا التعديل: نرسل تاريخ ووقت كاملين باستخدام toISOString
       const time = new Date().toISOString(); 
       
       const res = await api('attendance', { method: 'POST', body: {
