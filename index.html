@@ -16,32 +16,27 @@
   [hidden]{display:none !important}
   .wrap{max-width:600px; margin:0 auto; padding:0 14px}
   
-  /* الترويسة */
   .app-header{ position:sticky; top:0; z-index:50; background:var(--bg); border-bottom:1px solid var(--line); padding-top:env(safe-area-inset-top); }
   .topbar{display:flex; align-items:center; justify-content:space-between; padding:12px 0 8px}
   .brand{display:flex; align-items:center; gap:8px; font-weight:800; font-size:15px}
   .logo{width:32px; height:32px; border-radius:10px; background:var(--brand); color:var(--on-brand); display:grid; place-items:center; font-size:13px}
   .icon-btn{border:1px solid var(--line); background:var(--card); color:var(--muted); border-radius:10px; padding:6px 12px; font:inherit; font-size:13px; font-weight:700; cursor:pointer}
   
-  /* مبدل الشركات */
   .switcher{display:flex; gap:8px; padding-bottom:12px}
   .switcher select{flex:1; appearance:none; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:11px 14px; font:inherit; font-weight:700; font-size:14px; color:var(--ink)}
   .add-btn{width:44px; border-radius:12px; border:0; background:var(--brand); color:var(--on-brand); font-size:22px; font-weight:600; cursor:pointer; display:grid; place-items:center}
 
-  /* المحتوى العام */
   .card{background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 4px 12px rgba(0,0,0,.03); padding:18px; margin-bottom:12px}
   .hero{display:flex; align-items:center; justify-content:space-between; gap:12px}
   .hero-title{font-size:18px; font-weight:800}
   .hero-badge{background:var(--brand-soft); color:var(--brand); font-weight:800; font-size:13px; padding:6px 12px; border-radius:999px}
   .sec-title{font-size:13px; color:var(--muted); font-weight:700; margin:16px 4px 8px}
 
-  /* الإحصائيات */
   .stats{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px}
   .stat{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:14px}
   .stat b{font-size:18px; display:block}
   .stat small{color:var(--muted); font-size:12px}
 
-  /* قوائم */
   .row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line)}
   .row:last-child{border-bottom:0; padding-bottom:0}
   .avatar{width:40px; height:40px; border-radius:12px; background:var(--brand-soft); color:var(--brand); display:grid; place-items:center; font-weight:800; flex:none}
@@ -49,18 +44,15 @@
   .row-main b{display:block; font-size:14px}
   .row-main small{display:block; color:var(--muted); font-size:12px}
 
-  /* أزرار صغيرة */
   .btn-sm{background:var(--brand-soft); color:var(--brand); border:0; padding:8px 12px; border-radius:8px; font:inherit; font-size:12px; font-weight:700; cursor:pointer}
   .btn-sm.wa{background:var(--ok-soft); color:var(--ok)}
-  .btn-sm.ghost{background:var(--card); border:1px solid var(--line); color:var(--muted)}
+  .btn-sm.ghost{background:var(--card); border:1px solid var(--line); color:var(--danger)}
 
-  /* شريط التنقل السفلي */
   nav.tabs{position:fixed; bottom:0; left:0; right:0; z-index:50; background:var(--card); border-top:1px solid var(--line); display:flex; padding-bottom:env(safe-area-inset-bottom)}
   nav.tabs button{flex:1; background:none; border:0; padding:10px 2px; color:var(--muted); font:inherit; font-size:10px; font-weight:700; display:flex; flex-direction:column; align-items:center; gap:4px; cursor:pointer}
   nav.tabs button.active{color:var(--brand)}
   nav.tabs svg{width:22px; height:22px}
 
-  /* نماذج */
   .form{display:grid; gap:12px}
   .form label{display:grid; gap:6px; font-size:12px; font-weight:700; color:var(--muted)}
   .form input, .form select{width:100%; padding:12px; border:1px solid var(--line); border-radius:12px; background:var(--bg); color:var(--ink); font:inherit; font-size:15px}
@@ -69,7 +61,6 @@
   .btn:disabled{opacity:.55; pointer-events:none}
   .btn.ghost{background:transparent; color:var(--ink); border:1px solid var(--line)}
 
-  /* شاشة الدخول */
   .login-wrap{min-height:100dvh; display:grid; place-items:center; padding:24px 16px; background:radial-gradient(120% 80% at 50% 0%, var(--brand-soft) 0%, var(--bg) 55%)}
   .login-card{width:100%; max-width:400px; background:var(--card); border:1px solid var(--line); border-radius:22px; padding:26px 22px}
   .login-card .logo{width:54px; height:54px; border-radius:16px; font-size:17px; margin-bottom:14px}
@@ -78,7 +69,6 @@
   .text-links{display:flex; justify-content:space-between; margin-top:16px; font-size:13px}
   .text-links a{color:var(--brand); font-weight:700; cursor:pointer; text-decoration:none}
 
-  /* مودال */
   .modal{position:fixed; inset:0; z-index:100; display:none; align-items:flex-end; justify-content:center; background:rgba(15,23,42,.45); backdrop-filter:blur(2px)}
   .modal.open{display:flex}
   .modal-sheet{background:var(--card); width:100%; max-width:560px; border-radius:20px 20px 0 0; padding:20px; max-height:92vh; overflow:auto; animation:up .22s ease; padding-bottom:calc(20px + env(safe-area-inset-bottom))}
@@ -90,7 +80,6 @@
 </head>
 <body>
 
-<!-- شاشة الدخول والتسجيل -->
 <div id="loginScreen" hidden>
   <div class="login-wrap">
     <div class="login-card">
@@ -137,7 +126,6 @@
   </div>
 </div>
 
-<!-- التطبيق -->
 <div id="app" hidden>
   <header class="app-header">
     <div class="wrap">
@@ -156,25 +144,21 @@
     <section id="view-radar"></section>
     <section id="view-employees" hidden></section>
     
-    <!-- شاشة الحضور -->
     <section id="view-attendance" hidden>
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center">
           <div style="font-weight:700">تسجيل حضور اليوم</div>
           <div class="hero-badge" id="attDateBadge"></div>
         </div>
-        <div style="margin-top:10px; color:var(--muted); font-size:12px">اضغط على اسم الموظف لتسجيل حضوره فوراً.</div>
       </div>
       <div class="sec-title">الموظفون</div>
       <div id="attendanceList" class="card"></div>
     </section>
 
-    <!-- شاشة الإجازات -->
     <section id="view-leaves" hidden>
        <div class="card" style="text-align:center;color:var(--muted)">شاشة الإجازات (سنضيفها في الخطوة القادمة)</div>
     </section>
 
-    <!-- شاشة الرواتب -->
     <section id="view-payroll" hidden>
       <div class="card">
         <div style="display:flex; justify-content:space-between; align-items:center">
@@ -212,7 +196,6 @@
   </nav>
 </div>
 
-<!-- المودال -->
 <div class="modal" id="modal">
   <div class="modal-sheet">
     <div class="modal-head">
@@ -225,7 +208,6 @@
 </div>
 
 <script>
-/* الإعدادات */
 const CONFIG = { SUPABASE_URL: 'https://qdqecfaozbxivlwbinew.supabase.co', SUPABASE_KEY: 'sb_publishable_EK-n56uXsI94eiGWhH25sQ_Toj32Oho' };
 const $ = (s) => document.querySelector(s);
 const store = {
@@ -284,12 +266,10 @@ function openModal(title, body, footer) {
 }
 function closeModal() { $('#modal').classList.remove('open'); }
 
-/* الحالة */
 const state = { user: null, companies: [], currentCompany: null, employees: [], attendance: [], payrolls: [], view: 'radar' };
 const today = new Date().toISOString().split('T')[0];
 const currentMonth = new Date().toISOString().slice(0, 7);
 
-/* التنقل */
 function switchView(view) {
   state.view = view;
   document.querySelectorAll('section[id^="view-"]').forEach(v => v.hidden = true);
@@ -308,7 +288,6 @@ function toggleAuthView(view) {
   $('#viewForgot').hidden = view !== 'forgot';
 }
 
-/* التشغيل */
 async function startApp(user) {
   state.user = user;
   $('#loginScreen').hidden = true;
@@ -350,13 +329,10 @@ async function loadData() {
   $('#payMonth').value = currentMonth;
 }
 
-/* الرادار */
 function renderRadar() {
   const c = state.currentCompany;
   if (!c) return;
-  
   const totalSalary = state.employees.reduce((s, e) => s + (Number(e.base_salary) || 0), 0);
-  
   $('#view-radar').innerHTML = `
     <div class="card hero">
       <div>
@@ -365,7 +341,6 @@ function renderRadar() {
       </div>
       <div class="hero-badge">${c.currency || 'SAR'}</div>
     </div>
-
     <div class="stats">
       <div class="stat"><b>${state.employees.length}</b><small>إجمالي الموظفين</small></div>
       <div class="stat"><b>${totalSalary.toLocaleString()}</b><small>إجمالي الأساسي</small></div>
@@ -373,10 +348,8 @@ function renderRadar() {
   `;
 }
 
-/* الموظفين */
 function renderEmployees() {
   if (!state.currentCompany) return;
-  
   $('#view-employees').innerHTML = `
     <button class="btn" onclick="openEmployeeForm()">➕ إضافة موظف جديد</button>
     <div class="sec-title">قائمة الموظفين (${state.employees.length})</div>
@@ -430,7 +403,6 @@ async function saveEmployee() {
   } catch (e) { alert(e.message); }
 }
 
-/* الحضور */
 function renderAttendance() {
   if (!state.currentCompany) return;
   $('#attDateBadge').textContent = today;
@@ -455,29 +427,38 @@ function renderAttendance() {
 }
 
 async function toggleAttendance(empId, isPresent) {
-  if (isPresent) {
-    // حذف الحضور
-    const rec = state.attendance.find(a => a.employee_id === empId);
-    if(rec) {
-      await api(`attendance?id=eq.${rec.id}`, { method: 'DELETE' });
-      state.attendance = state.attendance.filter(a => a.id !== rec.id);
+  try {
+    if (isPresent) {
+      const rec = state.attendance.find(a => a.employee_id === empId);
+      if(rec) {
+        await api(`attendance?id=eq.${rec.id}`, { method: 'DELETE' });
+        state.attendance = state.attendance.filter(a => a.id !== rec.id);
+      }
+    } else {
+      // استخدام صيغة الوقت HH:MM:SS عشان قاعدة البيانات تقبلها
+      const time = new Date().toTimeString().slice(0, 8); 
+      
+      const res = await api('attendance', { method: 'POST', body: {
+        company_id: state.currentCompany.id,
+        employee_id: empId,
+        work_date: today,
+        check_in: time,
+        work_mode: 'office'
+      }});
+      
+      if (res && res.length > 0) {
+        state.attendance.push(res[0]);
+      } else {
+        await loadData(); // تحديث لو الداتا مجتش في الرد
+      }
     }
-  } else {
-    // إضافة الحضور
-    const time = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-    const res = await api('attendance', { method: 'POST', body: {
-      company_id: state.currentCompany.id,
-      employee_id: empId,
-      work_date: today,
-      check_in: time,
-      work_mode: 'office'
-    }});
-    state.attendance.push(res[0]);
+  } catch (error) {
+    alert("خطأ في تسجيل الحضور: " + (error.message || "تأكد من الصلاحيات في Supabase"));
+    console.error(error);
   }
   renderAttendance();
 }
 
-/* الرواتب */
 async function renderPayroll() {
   if (!state.currentCompany) return;
   const month = $('#payMonth').value || currentMonth;
@@ -529,17 +510,18 @@ function sendWhatsApp(payrollId) {
   const p = state.payrolls.find(x => x.id === payrollId);
   if(!p) return;
   const emp = state.employees.find(e => e.id === p.employee_id);
-  if(!emp || !emp.phone) return alert('رقم الجوال غير مسجل لهذا الموظف');
+  
+  if(!emp) return alert('الموظف غير موجود');
+  if(!emp.phone) return alert('⚠️ رقم الجوال غير مسجل لهذا الموظف. يرجى تعديل بيانات الموظف وإضافة رقمه أولاً.');
   
   let phone = emp.phone.replace(/\D/g, '');
-  if (phone.startsWith('0')) phone = '966' + phone.slice(1); // تحويل لصيغة دولية
+  if (phone.startsWith('0')) phone = '966' + phone.slice(1);
   
   const msg = `مرحباً ${emp.full_name}،\nتفاصيل راتب شهر ${p.month_year}:\n- الأساسي: ${Number(p.base_salary).toLocaleString()} ${state.currentCompany.currency}\n- الصافي: *${Number(p.net_salary).toLocaleString()} ${state.currentCompany.currency}*\n\nمع تحيات ${state.currentCompany.name}`;
   
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
-/* إضافة شركة */
 $('#addCompanyBtn').addEventListener('click', () => {
   openModal('إضافة شركة جديدة', `
     <form id="coForm" class="form">
@@ -567,7 +549,6 @@ async function saveCompany() {
   } catch (e) { alert(e.message); }
 }
 
-/* الأحداث الأساسية */
 $('#companySelect').addEventListener('change', (e) => selectCompany(e.target.value));
 $('#modal').addEventListener('click', (e) => { if(e.target.id === 'modal') closeModal(); });
 
@@ -590,7 +571,6 @@ $('#registerForm').addEventListener('submit', async (ev) => {
 
 $('#logoutBtn').addEventListener('click', () => { store.set(null); location.reload(); });
 
-/* التشغيل */
 (async function boot() {
   const s = store.get();
   if (!s?.access_token) return $('#loginScreen').hidden = false;
