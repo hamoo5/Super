@@ -14,7 +14,6 @@
 </head>
 <body class="text-slate-800">
 
-  <!-- شاشة التحميل -->
   <div id="loading-screen" class="fixed inset-0 bg-white flex items-center justify-center z-50">
     <div class="text-center">
       <div class="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -22,40 +21,22 @@
     </div>
   </div>
 
-  <!-- شاشة تسجيل الدخول والإنشاء -->
+  <!-- شاشة الدخول -->
   <div id="auth-screen" class="hidden min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100">
       <div class="text-center mb-6">
         <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-black mb-4">ت</div>
         <h1 class="text-2xl font-bold text-slate-800">نظام التشطيبات</h1>
       </div>
-
       <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-bold mb-1">الاسم بالكامل (للحساب الجديد)</label>
-          <input type="text" id="fullName" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500" placeholder="اسمك الثلاثي">
-        </div>
-        <div>
-          <label class="block text-sm font-bold mb-1">رقم الموبايل</label>
-          <input type="tel" id="phone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="01xxxxxxxxx">
-        </div>
-        <div>
-          <label class="block text-sm font-bold mb-1">كلمة المرور</label>
-          <input type="password" id="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="••••••••">
-        </div>
-        <div>
-          <label class="block text-sm font-bold mb-1">الرقم السري للاستعادة (4 أرقام)</label>
-          <input type="text" id="pin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="مثال: 1234">
-        </div>
-        
+        <div><label class="block text-sm font-bold mb-1">الاسم (للحساب الجديد)</label><input type="text" id="fullName" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500" placeholder="اسمك الثلاثي"></div>
+        <div><label class="block text-sm font-bold mb-1">رقم الموبايل</label><input type="tel" id="phone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="01xxxxxxxxx"></div>
+        <div><label class="block text-sm font-bold mb-1">كلمة المرور</label><input type="password" id="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="••••••••"></div>
+        <div><label class="block text-sm font-bold mb-1">الرقم السري (4 أرقام)</label><input type="text" id="pin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="1234"></div>
         <div id="auth-error" class="text-red-500 text-sm font-bold hidden text-center bg-red-50 p-2 rounded-lg"></div>
-
-        <button id="loginBtn" onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition">تسجيل الدخول</button>
-        <button id="signupBtn" onclick="handleSignup()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl transition">إنشاء حساب جديد</button>
-        
-        <div class="text-center mt-4">
-          <button onclick="showScreen('forgot-screen')" class="text-amber-600 text-sm font-bold hover:underline">نسيت كلمة المرور؟</button>
-        </div>
+        <button id="loginBtn" onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl transition">تسجيل الدخول</button>
+        <button id="signupBtn" onclick="handleSignup()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl transition">إنشاء حساب جديد</button>
+        <div class="text-center mt-4"><button onclick="showScreen('forgot-screen')" class="text-amber-600 text-sm font-bold hover:underline">نسيت كلمة المرور؟</button></div>
       </div>
     </div>
   </div>
@@ -63,28 +44,14 @@
   <!-- شاشة نسيت كلمة المرور -->
   <div id="forgot-screen" class="hidden min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100">
-      <div class="text-center mb-6">
-        <h2 class="text-xl font-bold text-slate-800">استعادة كلمة المرور</h2>
-        <p class="text-slate-500 text-sm mt-1">أدخل رقمك والرقم السري الذي اخترته سابقاً</p>
-      </div>
+      <div class="text-center mb-6"><h2 class="text-xl font-bold">استعادة كلمة المرور</h2></div>
       <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-bold mb-1">رقم الموبايل</label>
-          <input type="tel" id="resetPhone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="01xxxxxxxxx">
-        </div>
-        <div>
-          <label class="block text-sm font-bold mb-1">الرقم السري (PIN)</label>
-          <input type="text" id="resetPin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="1234">
-        </div>
-        <div>
-          <label class="block text-sm font-bold mb-1">كلمة المرور الجديدة</label>
-          <input type="password" id="resetNewPassword" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="••••••••">
-        </div>
-        
+        <div><label class="block text-sm font-bold mb-1">رقم الموبايل</label><input type="tel" id="resetPhone" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr"></div>
+        <div><label class="block text-sm font-bold mb-1">الرقم السري (PIN)</label><input type="text" id="resetPin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr"></div>
+        <div><label class="block text-sm font-bold mb-1">كلمة المرور الجديدة</label><input type="password" id="resetNewPassword" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr"></div>
         <div id="forgot-error" class="text-red-500 text-sm font-bold hidden text-center bg-red-50 p-2 rounded-lg"></div>
-
-        <button onclick="handleResetPassword()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl transition">تغيير كلمة المرور</button>
-        <button onclick="showScreen('auth-screen')" class="w-full text-slate-500 font-bold py-2 hover:bg-slate-50 rounded-xl transition mt-2">رجوع</button>
+        <button onclick="handleResetPassword()" class="w-full bg-amber-500 font-bold py-3 rounded-xl transition">تغيير كلمة المرور</button>
+        <button onclick="showScreen('auth-screen')" class="w-full text-slate-500 font-bold py-2 mt-2">رجوع</button>
       </div>
     </div>
   </div>
@@ -92,85 +59,91 @@
   <!-- لوحة التحكم -->
   <div id="app-screen" class="hidden min-h-screen pb-20 bg-slate-50">
     <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-10">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold">ت</div>
-        <span class="font-bold text-lg">التشطيبات</span>
-      </div>
+      <div class="flex items-center gap-2"><div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold">ت</div><span class="font-bold text-lg">التشطيبات</span></div>
       <button onclick="handleLogout()" class="text-red-500 text-sm font-bold bg-red-50 px-3 py-1.5 rounded-lg">خروج</button>
     </header>
 
     <main class="p-4 max-w-2xl mx-auto space-y-6">
-      
       <!-- الشاشة الرئيسية -->
       <div id="home-view">
-        <div id="no-company-section" class="hidden bg-white rounded-2xl shadow-sm p-6 border border-slate-100 text-center">
-          <h2 class="text-xl font-bold mb-2">أهلاً بك!</h2>
-          <p class="text-slate-500 mb-6">أنشئ شركتك الأولى للبدء.</p>
-          <input type="text" id="newCompanyName" class="w-full px-4 py-3 rounded-xl border border-slate-200 mb-3 focus:outline-none focus:border-amber-500" placeholder="اسم شركة التشطيبات">
-          <button onclick="handleCreateCompany()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">إنشاء الشركة</button>
+        <div id="no-company-section" class="hidden bg-white rounded-2xl shadow-sm p-6 text-center">
+          <h2 class="text-xl font-bold mb-2">أهلاً بك!</h2><p class="text-slate-500 mb-6">أنشئ شركتك الأولى للبدء.</p>
+          <input type="text" id="newCompanyName" class="w-full px-4 py-3 rounded-xl border mb-3" placeholder="اسم شركة التشطيبات">
+          <button onclick="handleCreateCompany()" class="w-full bg-amber-500 font-bold py-3 rounded-xl">إنشاء الشركة</button>
         </div>
 
         <div id="dashboard-section" class="hidden space-y-4">
           <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-lg">
             <p class="text-slate-400 text-sm mb-1">مرحباً بك في</p>
             <h2 id="display-company-name" class="text-2xl font-bold mb-4">اسم الشركة</h2>
-            <div class="flex items-center gap-2 bg-white/10 w-fit px-3 py-1.5 rounded-lg text-sm">
-              <span>دورك:</span>
-              <span id="display-role" class="font-bold text-amber-400">مالك</span>
-            </div>
+            <div class="flex items-center gap-2 bg-white/10 w-fit px-3 py-1.5 rounded-lg text-sm"><span>دورك:</span><span id="display-role" class="font-bold text-amber-400">مالك</span></div>
           </div>
 
-          <!-- أزرار سريعة -->
           <div class="grid grid-cols-2 gap-4">
-            <button onclick="switchView('projects-view')" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center hover:bg-slate-50 transition">
-              <div class="text-3xl mb-2">🏗️</div>
-              <div class="font-bold text-slate-700">المشاريع</div>
+            <button onclick="switchView('projects-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50">
+              <div class="text-3xl mb-2">🏗️</div><div class="font-bold text-slate-700">المشاريع</div>
             </button>
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center opacity-50">
-              <div class="text-3xl mb-2">👥</div>
-              <div class="font-bold text-slate-700">الفريق</div>
-              <div class="text-xs text-slate-400 mt-1">قريباً</div>
-            </div>
+            <button onclick="switchView('team-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50">
+              <div class="text-3xl mb-2">👥</div><div class="font-bold text-slate-700">الفريق</div>
+            </button>
           </div>
         </div>
       </div>
 
       <!-- شاشة المشاريع -->
       <div id="projects-view" class="hidden">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-xl font-bold text-slate-800">المشاريع</h2>
-          <button onclick="switchView('home-view')" class="text-amber-600 text-sm font-bold bg-amber-50 px-3 py-1.5 rounded-lg">رجوع</button>
-        </div>
-        
-        <!-- فورم إضافة مشروع -->
-        <div class="bg-white rounded-2xl shadow-sm p-4 border border-slate-100 mb-6">
+        <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">المشاريع</h2><button onclick="switchView('home-view')" class="text-amber-600 text-sm font-bold bg-amber-50 px-3 py-1.5 rounded-lg">رجوع</button></div>
+        <div class="bg-white rounded-2xl shadow-sm p-4 border mb-6">
           <h3 class="font-bold mb-3 text-slate-700">إضافة مشروع جديد</h3>
           <div class="space-y-3">
-            <input type="text" id="projName" placeholder="اسم المشروع (مثال: فيلا المعادي)" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-amber-500">
-            <input type="text" id="projClient" placeholder="اسم العميل" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-amber-500">
-            <input type="number" id="projBudget" placeholder="الميزانية (جنيه)" class="w-full px-4 py-2 rounded-lg border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr">
-            <button onclick="handleAddProject()" id="addProjBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2.5 rounded-lg transition">حفظ المشروع</button>
+            <input type="text" id="projName" placeholder="اسم المشروع" class="w-full px-4 py-2 rounded-lg border">
+            <input type="text" id="projClient" placeholder="اسم العميل" class="w-full px-4 py-2 rounded-lg border">
+            <input type="number" id="projBudget" placeholder="الميزانية (جنيه)" class="w-full px-4 py-2 rounded-lg border text-right dir-ltr">
+            <button onclick="handleAddProject()" id="addProjBtn" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-lg">حفظ المشروع</button>
+          </div>
+        </div>
+        <div id="projects-list" class="space-y-3"></div>
+      </div>
+
+      <!-- شاشة الفريق -->
+      <div id="team-view" class="hidden">
+        <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">الفريق</h2><button onclick="switchView('home-view')" class="text-amber-600 text-sm font-bold bg-amber-50 px-3 py-1.5 rounded-lg">رجوع</button></div>
+        
+        <!-- إضافة عضو جديد -->
+        <div id="invite-section" class="bg-white rounded-2xl shadow-sm p-4 border mb-6 hidden">
+          <h3 class="font-bold mb-3 text-slate-700">دعوة عضو جديد</h3>
+          <div class="space-y-3">
+            <select id="inviteRole" class="w-full px-4 py-2 rounded-lg border bg-white">
+              <option value="engineer">مهندس</option>
+              <option value="accountant">محاسب</option>
+              <option value="supervisor">مشرف موقع</option>
+              <option value="storekeeper">أمين مخزن</option>
+            </select>
+            <button onclick="handleGenerateInvite()" class="w-full bg-amber-500 text-slate-900 font-bold py-2.5 rounded-lg">إنشاء رابط الدعوة</button>
+          </div>
+          <!-- رابط الدعوة -->
+          <div id="invite-link-container" class="hidden mt-4 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+            <p class="text-sm font-bold text-green-800 mb-2">تم إنشاء الرابط! ابعته للموظف:</p>
+            <input type="text" id="inviteLink" readonly class="w-full px-2 py-1 text-xs text-center border rounded bg-white mb-2" dir="ltr">
+            <button onclick="copyInviteLink()" class="text-xs bg-green-600 text-white px-4 py-1 rounded">نسخ الرابط</button>
           </div>
         </div>
 
-        <!-- قائمة المشاريع -->
-        <div id="projects-list" class="space-y-3">
-          <div class="text-center text-slate-400 py-4 text-sm">جاري تحميل المشاريع...</div>
-        </div>
+        <!-- قائمة الفريق -->
+        <div id="team-list" class="space-y-3"></div>
       </div>
 
     </main>
   </div>
 
   <script>
-    // مفاتيحك جاهزة هنا
     const SUPABASE_URL = 'https://qdqecfaozbxivlwbinew.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_EK-n56uXsI94eiGWhH25sQ_Toj32Oho';
-    
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let currentCompanyId = null;
+    let currentUserRole = null;
 
     function showScreen(screenId) {
       document.getElementById('loading-screen').classList.add('hidden');
@@ -183,8 +156,11 @@
     function switchView(viewId) {
       document.getElementById('home-view').classList.add('hidden');
       document.getElementById('projects-view').classList.add('hidden');
+      document.getElementById('team-view').classList.add('hidden');
       document.getElementById(viewId).classList.remove('hidden');
+      
       if (viewId === 'projects-view') loadProjects();
+      if (viewId === 'team-view') loadTeam();
     }
 
     function showError(id, msg) {
@@ -195,19 +171,14 @@
     }
 
     function phoneToEmail(phone) {
-      let cleanPhone = phone.replace(/\D/g, '');
-      return cleanPhone + '@app.local';
+      return phone.replace(/\D/g, '') + '@app.local';
     }
 
     async function handleLogin() {
-      const phone = document.getElementById('phone').value;
+      const email = phoneToEmail(document.getElementById('phone').value);
       const password = document.getElementById('password').value;
-      if (!phone || !password) return showError('auth-error', 'أدخل رقم الموبايل وكلمة المرور');
-
-      const email = phoneToEmail(phone);
       const btn = document.getElementById('loginBtn');
       btn.textContent = 'جاري الدخول...'; btn.disabled = true;
-
       const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
       btn.textContent = 'تسجيل الدخول'; btn.disabled = false;
       if (error) showError('auth-error', 'رقم الموبايل أو كلمة المرور غير صحيحة');
@@ -219,17 +190,12 @@
       const fullName = document.getElementById('fullName').value;
       const pin = document.getElementById('pin').value;
       
-      if (!phone || !password || !fullName || pin.length !== 4) {
-        return showError('auth-error', 'أكمل كل البيانات (الرقم السري 4 أرقام)');
-      }
-
+      if (!phone || !password || !fullName || pin.length !== 4) return showError('auth-error', 'أكمل كل البيانات');
       const email = phoneToEmail(phone);
       const btn = document.getElementById('signupBtn');
       btn.textContent = 'جاري الإنشاء...'; btn.disabled = true;
 
-      const { error } = await supabaseClient.auth.signUp({ 
-        email, password, options: { data: { full_name: fullName, phone: phone } }
-      });
+      const { error } = await supabaseClient.auth.signUp({ email, password, options: { data: { full_name: fullName, phone: phone } } });
 
       if (error) {
         showError('auth-error', error.message);
@@ -245,29 +211,19 @@
       const phone = document.getElementById('resetPhone').value;
       const pin = document.getElementById('resetPin').value;
       const newPassword = document.getElementById('resetNewPassword').value;
-
       if (!phone || !pin || !newPassword) return showError('forgot-error', 'أكمل كل البيانات');
-
       const btn = event.target;
       btn.textContent = 'جاري التغيير...'; btn.disabled = true;
-
-      const { error } = await supabaseClient.rpc('reset_password_with_pin', { 
-        p_phone: phone, p_pin: pin, p_new_password: newPassword 
-      });
-
+      const { error } = await supabaseClient.rpc('reset_password_with_pin', { p_phone: phone, p_pin: pin, p_new_password: newPassword });
       btn.textContent = 'تغيير كلمة المرور'; btn.disabled = false;
-
-      if (error) {
-        showError('forgot-error', error.message);
-      } else {
-        alert('تم تغيير كلمة المرور بنجاح! يمكنك تسجيل الدخول الآن.');
+      if (error) showError('forgot-error', error.message);
+      else {
+        alert('تم تغيير كلمة المرور بنجاح!');
         showScreen('auth-screen');
       }
     }
 
-    async function handleLogout() {
-      await supabaseClient.auth.signOut();
-    }
+    async function handleLogout() { await supabaseClient.auth.signOut(); }
 
     async function handleCreateCompany() {
       const name = document.getElementById('newCompanyName').value;
@@ -284,6 +240,17 @@
       const { data: { user } } = await supabaseClient.auth.getUser();
       if (!user) return showScreen('auth-screen');
 
+      // لو المستخدم داخل عن طريق لينك دعوة
+      const urlParams = new URLSearchParams(window.location.search);
+      const inviteToken = urlParams.get('invite');
+      
+      if (inviteToken) {
+        const { error } = await supabaseClient.rpc('accept_invite', { p_token: inviteToken });
+        if (error) alert('خطأ في قبول الدعوة: ' + error.message);
+        else alert('تم قبول الدعوة بنجاح وانضمامك للشركة!');
+        window.history.replaceState({}, document.title, window.location.pathname); // مسح التوكن من الرابط
+      }
+
       const { data: members } = await supabaseClient
         .from('members')
         .select('company_id, role, companies(name)')
@@ -298,12 +265,21 @@
         document.getElementById('dashboard-section').classList.add('hidden');
       } else {
         currentCompanyId = members[0].company_id;
+        currentUserRole = members[0].role;
         
         document.getElementById('no-company-section').classList.add('hidden');
         document.getElementById('dashboard-section').classList.remove('hidden');
+        
         const roleMap = { 'owner': 'مالك', 'accountant': 'محاسب', 'supervisor': 'مشرف', 'storekeeper': 'أمين مخزن', 'engineer': 'مهندس' };
         document.getElementById('display-company-name').textContent = members[0].companies.name;
-        document.getElementById('display-role').textContent = roleMap[members[0].role] || members[0].role;
+        document.getElementById('display-role').textContent = roleMap[currentUserRole] || currentUserRole;
+        
+        // إظهار قسم الدعوات للمالك فقط
+        if (currentUserRole === 'owner') {
+          document.getElementById('invite-section').classList.remove('hidden');
+        } else {
+          document.getElementById('invite-section').classList.add('hidden');
+        }
       }
     }
 
@@ -315,24 +291,13 @@
       const listEl = document.getElementById('projects-list');
       listEl.innerHTML = `<div class="text-center text-slate-400 py-4 text-sm">جاري التحميل...</div>`;
 
-      const { data, error } = await supabaseClient
-        .from('projects')
-        .select('*')
-        .eq('company_id', currentCompanyId)
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabaseClient.from('projects').select('*').eq('company_id', currentCompanyId).order('created_at', { ascending: false });
 
-      if (error) {
-        listEl.innerHTML = `<div class="text-red-500 text-sm text-center">خطأ: ${error.message}</div>`;
-        return;
-      }
-
-      if (data.length === 0) {
-        listEl.innerHTML = `<div class="text-center text-slate-400 py-4 text-sm">لا توجد مشاريع بعد. أضف مشروعك الأول!</div>`;
-        return;
-      }
+      if (error) return listEl.innerHTML = `<div class="text-red-500 text-sm text-center">خطأ: ${error.message}</div>`;
+      if (data.length === 0) return listEl.innerHTML = `<div class="text-center text-slate-400 py-4 text-sm">لا توجد مشاريع.</div>`;
 
       listEl.innerHTML = data.map(proj => `
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex justify-between items-center">
+        <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
           <div>
             <h4 class="font-bold text-slate-800">${proj.name}</h4>
             <p class="text-xs text-slate-500 mt-1">العميل: ${proj.client_name || 'غير محدد'}</p>
@@ -347,31 +312,16 @@
       const name = document.getElementById('projName').value;
       const client = document.getElementById('projClient').value;
       const budget = parseFloat(document.getElementById('projBudget').value) || 0;
-
       if (!name) return alert('أدخل اسم المشروع');
-
       const btn = document.getElementById('addProjBtn');
-      btn.textContent = 'جاري الحفظ...';
-      btn.disabled = true;
-
+      btn.textContent = 'جاري الحفظ...'; btn.disabled = true;
       const { data: { user } } = await supabaseClient.auth.getUser();
 
-      const { error } = await supabaseClient
-        .from('projects')
-        .insert([{
-          company_id: currentCompanyId,
-          name: name,
-          client_name: client,
-          budget: budget,
-          created_by: user.id
-        }]);
+      const { error } = await supabaseClient.from('projects').insert([{ company_id: currentCompanyId, name: name, client_name: client, budget: budget, created_by: user.id }]);
 
-      btn.textContent = 'حفظ المشروع';
-      btn.disabled = false;
-
-      if (error) {
-        alert('خطأ: ' + error.message);
-      } else {
+      btn.textContent = 'حفظ المشروع'; btn.disabled = false;
+      if (error) alert('خطأ: ' + error.message);
+      else {
         document.getElementById('projName').value = '';
         document.getElementById('projClient').value = '';
         document.getElementById('projBudget').value = '';
@@ -380,8 +330,61 @@
     }
 
     // ============================================
-    // تشغيل التطبيق
+    // دوال الفريق والدعوات
     // ============================================
+    async function loadTeam() {
+      if (!currentCompanyId) return;
+      const listEl = document.getElementById('team-list');
+      listEl.innerHTML = `<div class="text-center text-slate-400 py-4 text-sm">جاري التحميل...</div>`;
+
+      const { data, error } = await supabaseClient.from('members').select('id, role, full_name, email, is_active').eq('company_id', currentCompanyId).eq('is_active', true).order('joined_at');
+
+      if (error) return listEl.innerHTML = `<div class="text-red-500 text-sm text-center">خطأ: ${error.message}</div>`;
+
+      const roleMap = { 'owner': 'مالك', 'accountant': 'محاسب', 'supervisor': 'مشرف', 'storekeeper': 'أمين مخزن', 'engineer': 'مهندس' };
+
+      listEl.innerHTML = data.map(m => `
+        <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
+          <div>
+            <h4 class="font-bold text-slate-800">${m.full_name || 'بدون اسم'}</h4>
+            <p class="text-xs text-slate-500 mt-1">${m.email ? m.email.replace('@app.local','') : ''}</p>
+          </div>
+          <span class="bg-slate-100 text-slate-600 text-xs px-2 py-1 rounded-lg font-bold">${roleMap[m.role] || m.role}</span>
+        </div>
+      `).join('');
+    }
+
+    async function handleGenerateInvite() {
+      const role = document.getElementById('inviteRole').value;
+      const btn = event.target;
+      btn.textContent = 'جاري الإنشاء...'; btn.disabled = true;
+
+      const { data: { user } } = await supabaseClient.auth.getUser();
+
+      const { data, error } = await supabaseClient
+        .from('invites')
+        .insert([{ company_id: currentCompanyId, role: role, created_by: user.id }])
+        .select()
+        .single();
+
+      btn.textContent = 'إنشاء رابط الدعوة'; btn.disabled = false;
+
+      if (error) return alert('خطأ: ' + error.message);
+
+      const link = `${window.location.origin}/?invite=${data.token}`;
+      document.getElementById('inviteLink').value = link;
+      document.getElementById('invite-link-container').classList.remove('hidden');
+    }
+
+    function copyInviteLink() {
+      const copyText = document.getElementById("inviteLink");
+      copyText.select();
+      copyText.setSelectionRange(0, 99999);
+      navigator.clipboard.writeText(copyText.value);
+      alert("تم نسخ الرابط!");
+    }
+
+    // تشغيل التطبيق
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (session) checkUserMembership();
       else showScreen('auth-screen');
