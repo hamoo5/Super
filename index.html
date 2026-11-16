@@ -133,3 +133,193 @@
             </div>
         </div>
     </div>
+    <script>
+        const SUPABASE_URL = 'https://supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_EK-n56uXsI94eiGWhH25sQ_Toj32Oho';
+        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let currentCompany = null;
+        let companiesList = [];
+        let employeesList = [];
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+
+        db.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                currentUser = session.user;
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('app-screen').classList.remove('hidden');
+                loadCompanies();
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('app-screen').classList.add('hidden');
+            }
+        });
+
+        async function handleAuth(type) {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const msg = document.getElementById('auth-msg');
+            msg.textContent = 'جاري المعالجة...';
+
+            const { error } = type === 'login' 
+                ? await db.auth.signInWithPassword({ email, password })
+                : await db.auth.signUp({ email, password });
+
+            if (error) msg.textContent = error.message;
+            else if (type === 'signup') msg.textContent = 'تم إنشاء الحساب! يمكنك تسجيل الدخول الآن.';
+        }
+
+        async function logout() { await db.auth.signOut(); }
+
+        async function loadCompanies() {
+            const { data } = await db.from('companies').select('*').order('created_at', { ascending: false });
+            companiesList = data || [];
+            const switcher = document.getElementById('company-switcher');
+            if (companiesList.length === 0) {
+                switcher.innerHTML = '<option value="">لا توجد شركات - أضف أول شركة +</option>';
+                return;
+            }
+            switcher.innerHTML = companiesList.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            switchCompany();
+        }
+
+        function switchCompany() {
+            const id = document.getElementById('company-switcher').value;
+            currentCompany = companiesList.find(c => c.id === id);
+            if (currentCompany) loadCompanyData();
+        }
+
+        async function addCompany() {
+            const name = document.getElementById('comp-name').value;
+            const activity_type = document.getElementById('comp-activity').value;
+            const currency = document.getElementById('comp-currency').value;
+            if (!name) return;
+
+            await db.from('companies').insert([{ name, activity_type, currency, owner_id: currentUser.id }]);
+            closeModal('company-modal');
+            loadCompanies();
+        }
+
+        async function loadCompanyData() {
+            const { data: emps } = await db.from('employees').select('*').eq('company_id', currentCompany.id);
+            employeesList = emps || [];
+            document.getElementById('stat-employees').textContent = employeesList.length;
+
+            const today = new Date().toISOString().split('T')[0];
+            const { data: att } = await db.from('attendance').select('*').eq('company_id', currentCompany.id).eq('work_date', today);
+            const attendedIds = (att || []).map(a => a.employee_id);
+            document.getElementById('stat-attendance').textContent = attendedIds.length;
+
+            renderRadar();
+            renderEmployees();
+            renderAttendance(attendedIds);
+            renderPayroll();
+        }
+
+        function renderRadar() {
+            const alertsDiv = document.getElementById('radar-alerts');
+            let alerts = [];
+            const today = new Date();
+
+            employeesList.forEach(emp => {
+                if (emp.contract_end_date) {
+                    const diff = Math.ceil((new Date(emp.contract_end_date) - today) / (1000 * 60 * 60 * 24));
+                    if (diff <= 30 && diff >= 0) alerts.push(`⚠️ عقد الموظف <b>${emp.full_name}</b> ينتهي خلال ${diff} يوم.`);
+                    if (diff < 0) alerts.push(`🚨 عقد الموظف <b>${emp.full_name}</b> منتهي الصلاحية!`);
+                }
+            });
+
+            alertsDiv.innerHTML = alerts.length 
+                ? alerts.map(a => `<div class="p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-800 dark:text-amber-200 rounded-xl text-xs">${a}</div>`).join('')
+                : '<p class="text-emerald-600 text-xs">✅ جميع ملفات وعقود الشركة محدثة ولا توجد تنبيهات عاجلة.</p>';
+        }
+
+        function renderEmployees() {
+            const list = document.getElementById('employees-list');
+            list.innerHTML = employeesList.map(emp => `
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-sm border dark:border-slate-700 flex justify-between items-center">
+                    <div>
+                        <h4 class="font-bold text-sm">${emp.full_name}</h4>
+                        <p class="text-xs text-slate-500">${emp.job_title || 'موظف'} • الراتب: ${emp.base_salary} ${currentCompany.currency}</p>
+                    </div>
+                    <span class="text-xs bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg font-semibold">نشط</span>
+                </div>
+            `).join('') || '<p class="text-center text-xs text-slate-400 py-6">لا يوجد موظفون في هذه الشركة بعد.</p>';
+        }
+
+        function renderAttendance(attendedIds) {
+            const list = document.getElementById('attendance-list');
+            list.innerHTML = employeesList.map(emp => {
+                const isPresent = attendedIds.includes(emp.id);
+                return `
+                <div class="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl">
+                    <span class="text-sm font-semibold">${emp.full_name}</span>
+                    ${isPresent 
+                        ? '<span class="text-xs text-emerald-600 font-bold">✔️ تم التسجيل</span>'
+                        : `<button onclick="markPresent('${emp.id}')" class="bg-emerald-600 text-white text-xs px-3 py-1.5 rounded-lg font-bold">تسجيل حضور</button>`
+                    }
+                </div>`;
+            }).join('');
+        }
+
+        async function markPresent(empId) {
+            await db.from('attendance').insert([{
+                company_id: currentCompany.id,
+                employee_id: empId,
+                check_in: new Date().toISOString(),
+                work_mode: 'remote'
+            }]);
+            loadCompanyData();
+        }
+
+        function renderPayroll() {
+            const list = document.getElementById('payroll-list');
+            const month = new Date().toLocaleString('ar-EG', { month: 'long', year: 'numeric' });
+            list.innerHTML = employeesList.map(emp => {
+                const msg = encodeURIComponent(`مرحباً ${emp.full_name}،\nإليك بيان راتب شهر (${month}) من شركة *${currentCompany.name}*:\n- الراتب الأساسي: ${emp.base_salary} ${currentCompany.currency}\n- صافي المستحق: ${emp.base_salary} ${currentCompany.currency}\nمع تمنياتنا لك بالتوفيق.`);
+                return `
+                <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl flex justify-between items-center">
+                    <div>
+                        <p class="font-bold text-sm">${emp.full_name}</p>
+                        <p class="text-xs text-slate-500">الصافي: ${emp.base_salary} ${currentCompany.currency}</p>
+                    </div>
+                    <a href="https://wa.me{emp.phone}?text=${msg}" target="_blank" class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-2 rounded-xl font-bold flex items-center gap-1">
+                        📲 إرسال واتساب
+                    </a>
+                </div>`;
+            }).join('');
+        }
+
+        async function addEmployee() {
+            const full_name = document.getElementById('emp-name').value;
+            const job_title = document.getElementById('emp-title').value;
+            const phone = document.getElementById('emp-phone').value;
+            const base_salary = document.getElementById('emp-salary').value || 0;
+            const contract_end_date = document.getElementById('emp-contract').value || null;
+            if (!full_name || !currentCompany) return;
+
+            await db.from('employees').insert([{ company_id: currentCompany.id, full_name, job_title, phone, base_salary, contract_end_date }]);
+            closeModal('employee-modal');
+            loadCompanyData();
+        }
+
+        function showTab(tab) {
+            ['radar', 'employees', 'attendance', 'payroll'].forEach(t => {
+                document.getElementById(`view-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}`).classList.remove('tab-active');
+                document.getElementById(`tab-${t}`).classList.add('text-slate-500');
+            });
+            document.getElementById(`view-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}`).classList.add('tab-active');
+            document.getElementById(`tab-${tab}`).classList.remove('text-slate-500');
+        }
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    </script>
+</body>
+</html>
