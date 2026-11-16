@@ -316,8 +316,9 @@ async function rpc(fn, args) {
     headers: { 'apikey': CONFIG.SUPABASE_KEY, 'Authorization': 'Bearer ' + CONFIG.SUPABASE_KEY, 'Content-Type': 'application/json' },
     body: JSON.stringify(args)
   });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.message || 'خطأ');
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (!res.ok) throw new Error(data?.message || 'خطأ');
   return data;
 }
 
@@ -400,7 +401,6 @@ async function loadData() {
   state.leaves = lvs;
   state.payrolls = pay;
   state.compliance = comp;
-  $('#payMonth').value = currentMonth;
 }
 
 function renderRadar() {
@@ -409,26 +409,24 @@ function renderRadar() {
   const totalSalary = state.employees.reduce((s, e) => s + (Number(e.base_salary) || 0), 0);
   const pendingLeaves = state.leaves.filter(l => l.status === 'pending').length;
   
-  // Mood Check
   const moods = state.attendance.map(a => a.mood).filter(Boolean);
   const happy = moods.filter(m => m === '😃').length;
   const neutral = moods.filter(m => m === '😐').length;
   const angry = moods.filter(m => m === '😡').length;
   
-  // Alerts (Contracts & Compliance)
   const todayDate = new Date(today);
   let alertsHtml = '';
   
   state.employees.forEach(e => {
     if(e.contract_end_date) {
       const days = Math.round((new Date(e.contract_end_date) - todayDate) / 864e5);
-      if(days <= 30) alertsHtml += `<div class="alert-row"><div class="alert-dot ${days<=7?'bad':'warn'}"></div><div class="alert-main"><b>عقد ${e.full_name}</b><small>ينتهي خلال ${days} يوم</small></div></div>`;
+      if(days <= 30) alertsHtml += `<div class="row" style="padding:8px 0"><div class="avatar" style="background:var(--amber-soft);color:var(--amber)">⚠️</div><div class="row-main"><b>عقد ${e.full_name}</b><small>ينتهي خلال ${days} يوم</small></div></div>`;
     }
   });
   state.compliance.forEach(c => {
     if(c.expiry_date) {
       const days = Math.round((new Date(c.expiry_date) - todayDate) / 864e5);
-      if(days <= 30) alertsHtml += `<div class="alert-row"><div class="alert-dot ${days<=7?'bad':'warn'}"></div><div class="alert-main"><b>${c.title}</b><small>ينتهي خلال ${days} يوم</small></div></div>`;
+      if(days <= 30) alertsHtml += `<div class="row" style="padding:8px 0"><div class="avatar" style="background:var(--danger-soft);color:var(--danger)">🛡️</div><div class="row-main"><b>${c.title}</b><small>ينتهي خلال ${days} يوم</small></div></div>`;
     }
   });
 
@@ -599,20 +597,21 @@ function renderPayroll() {
         <b>كشف رواتب</b>
         <input type="month" id="payMonth" value="${currentMonth}" style="padding:8px; border-radius:8px; border:1px solid var(--line)">
       </div>
-      <button class="btn" id="btnGenPay" style="margin-top:12px">توليد الرواتب</button>
+      <button class="btn" onclick="generatePayroll()" style="margin-top:12px">توليد الرواتب</button>
     </div>
     <div class="card">${html||'لم يتم التوليد'}</div>
   `;
-  $('#btnGenPay').addEventListener('click', async () => {
-    const month = $('#payMonth').value;
-    const existing = state.payrolls.map(p => p.employee_id);
-    const rows = state.employees.filter(e => !existing.includes(e.id)).map(e => ({
-      company_id: state.currentCompany.id, employee_id: e.id, month_year: month, base_salary: e.base_salary, net_salary: e.base_salary
-    }));
-    if(!rows.length) return alert('كل الرواتب مولدة');
-    await api('payrolls', { method: 'POST', body: rows });
-    await loadData(); renderPayroll();
-  });
+}
+
+async function generatePayroll() {
+  const month = $('#payMonth').value || currentMonth;
+  const existing = state.payrolls.map(p => p.employee_id);
+  const rows = state.employees.filter(e => !existing.includes(e.id)).map(e => ({
+    company_id: state.currentCompany.id, employee_id: e.id, month_year: month, base_salary: e.base_salary, net_salary: e.base_salary
+  }));
+  if(!rows.length) return alert('كل الرواتب مولدة');
+  await api('payrolls', { method: 'POST', body: rows });
+  await loadData(); renderPayroll();
 }
 
 function sendWa(id) {
@@ -662,7 +661,6 @@ async function delComp(id) {
   await loadData(); renderCompliance();
 }
 
-// Company Auth
 $('#addCompanyBtn').addEventListener('click', () => {
   openModal('إضافة شركة', `
     <form id="coForm" class="form">
@@ -692,7 +690,6 @@ $('#loginForm').addEventListener('submit', async (e) => { e.preventDefault(); tr
 $('#registerForm').addEventListener('submit', async (e) => { e.preventDefault(); try { await signUp($('#regEmail').value, $('#regPassword').value); await startApp(await signIn($('#regEmail').value, $('#regPassword').value)); } catch (err) { $('#regErr').textContent = err.message; } });
 $('#logoutBtn').addEventListener('click', () => { store.set(null); location.reload(); });
 
-// Portal & Onboarding
 function selectMood(m, btn) { state.selectedMood = m; document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); }
 
 async function initPortal(id) {
