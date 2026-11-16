@@ -22,40 +22,75 @@
     </div>
   </div>
 
-  <!-- شاشة تسجيل الدخول / إنشاء حساب -->
+  <!-- شاشة تسجيل الدخول والإنشاء -->
   <div id="auth-screen" class="hidden min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100">
-      <div class="text-center mb-8">
+      <div class="text-center mb-6">
         <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-black mb-4">ت</div>
         <h1 class="text-2xl font-bold text-slate-800">نظام التشطيبات</h1>
-        <p class="text-slate-500 text-sm mt-2">سجل دخولك أو أنشئ حساب جديد</p>
       </div>
 
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-bold mb-1">الاسم بالكامل (للحساب الجديد فقط)</label>
-          <input type="text" id="fullName" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200" placeholder="محمد أحمد">
+          <label class="block text-sm font-bold mb-1">الاسم بالكامل (للحساب الجديد)</label>
+          <input type="text" id="fullName" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500" placeholder="اسمك الثلاثي">
         </div>
         <div>
-          <label class="block text-sm font-bold mb-1">البريد الإلكتروني</label>
-          <input type="email" id="email" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200" placeholder="name@example.com">
+          <label class="block text-sm font-bold mb-1">رقم الموبايل</label>
+          <input type="tel" id="phone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="01xxxxxxxxx">
         </div>
         <div>
           <label class="block text-sm font-bold mb-1">كلمة المرور</label>
-          <input type="password" id="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-200" placeholder="••••••••">
+          <input type="password" id="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="••••••••">
+        </div>
+        <div>
+          <label class="block text-sm font-bold mb-1">الرقم السري للاستعادة (4 أرقام)</label>
+          <input type="text" id="pin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="مثال: 1234">
         </div>
         
-        <div id="auth-error" class="text-red-500 text-sm font-bold hidden"></div>
+        <div id="auth-error" class="text-red-500 text-sm font-bold hidden text-center bg-red-50 p-2 rounded-lg"></div>
 
         <button id="loginBtn" onclick="handleLogin()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition">تسجيل الدخول</button>
         <button id="signupBtn" onclick="handleSignup()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl transition">إنشاء حساب جديد</button>
+        
+        <div class="text-center mt-4">
+          <button onclick="showScreen('forgot-screen')" class="text-amber-600 text-sm font-bold hover:underline">نسيت كلمة المرور؟</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- لوحة التحكم الرئيسية -->
+  <!-- شاشة نسيت كلمة المرور -->
+  <div id="forgot-screen" class="hidden min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100">
+      <div class="text-center mb-6">
+        <h2 class="text-xl font-bold text-slate-800">استعادة كلمة المرور</h2>
+        <p class="text-slate-500 text-sm mt-1">أدخل رقمك والرقم السري الذي اخترته سابقاً</p>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-bold mb-1">رقم الموبايل</label>
+          <input type="tel" id="resetPhone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="01xxxxxxxxx">
+        </div>
+        <div>
+          <label class="block text-sm font-bold mb-1">الرقم السري (PIN)</label>
+          <input type="text" id="resetPin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="1234">
+        </div>
+        <div>
+          <label class="block text-sm font-bold mb-1">كلمة المرور الجديدة</label>
+          <input type="password" id="resetNewPassword" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="••••••••">
+        </div>
+        
+        <div id="forgot-error" class="text-red-500 text-sm font-bold hidden text-center bg-red-50 p-2 rounded-lg"></div>
+
+        <button onclick="handleResetPassword()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-3 rounded-xl transition">تغيير كلمة المرور</button>
+        <button onclick="showScreen('auth-screen')" class="w-full text-slate-500 font-bold py-2 hover:bg-slate-50 rounded-xl transition mt-2">رجوع</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- لوحة التحكم -->
   <div id="app-screen" class="hidden min-h-screen pb-20">
-    <!-- الهيدر -->
     <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-10">
       <div class="flex items-center gap-2">
         <div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold">ت</div>
@@ -65,17 +100,13 @@
     </header>
 
     <main class="p-4 max-w-2xl mx-auto space-y-6">
-      
-      <!-- قسم إنشاء شركة (لو المستخدم جديد) -->
       <div id="no-company-section" class="hidden bg-white rounded-2xl shadow-sm p-6 border border-slate-100 text-center">
         <h2 class="text-xl font-bold mb-2">أهلاً بك!</h2>
-        <p class="text-slate-500 mb-6">أنت لست مرتبطاً بأي شركة حتى الآن. أنشئ شركتك الأولى للبدء.</p>
-        
+        <p class="text-slate-500 mb-6">أنشئ شركتك الأولى للبدء.</p>
         <input type="text" id="newCompanyName" class="w-full px-4 py-3 rounded-xl border border-slate-200 mb-3 focus:outline-none focus:border-amber-500" placeholder="اسم شركة التشطيبات">
         <button onclick="handleCreateCompany()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl">إنشاء الشركة</button>
       </div>
 
-      <!-- قسم لوحة التحكم (لو المستخدم عنده شركة) -->
       <div id="dashboard-section" class="hidden space-y-4">
         <div class="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-lg">
           <p class="text-slate-400 text-sm mb-1">مرحباً بك في</p>
@@ -85,122 +116,123 @@
             <span id="display-role" class="font-bold text-amber-400">مالك</span>
           </div>
         </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center">
-            <div class="text-3xl mb-2">👥</div>
-            <div class="text-sm text-slate-500">الأعضاء</div>
-            <div class="font-bold text-lg">قريباً</div>
-          </div>
-          <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center">
-            <div class="text-3xl mb-2">🏗️</div>
-            <div class="text-sm text-slate-500">المشاريع</div>
-            <div class="font-bold text-lg">قريباً</div>
-          </div>
-        </div>
       </div>
-
     </main>
   </div>
 
   <script>
-    // ============================================
-    // 1. الإعدادات (لازم تغيرهم)
-    // ============================================
-    const SUPABASE_URL = 'https://qdqecfaozbxivlwbinew.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_EK-n56uXsI94eiGWhH25sQ_Toj32Oho';
-
-    // ============================================
-    // 2. تهيئة Supabase
-    // ============================================
+    const SUPABASE_URL = 'ضع_هنا_رابط_المشروع';
+    const SUPABASE_ANON_KEY = 'ضع_هنا_المفتاح_anon';
     const { createClient } = supabase;
     const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // ============================================
-    // 3. دوال مساعدة
-    // ============================================
     function showScreen(screenId) {
       document.getElementById('loading-screen').classList.add('hidden');
       document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('forgot-screen').classList.add('hidden');
       document.getElementById('app-screen').classList.add('hidden');
       document.getElementById(screenId).classList.remove('hidden');
     }
 
-    function showError(msg) {
-      const err = document.getElementById('auth-error');
+    function showError(id, msg) {
+      const err = document.getElementById(id);
       err.textContent = msg;
       err.classList.remove('hidden');
       setTimeout(() => err.classList.add('hidden'), 5000);
     }
 
-    // ============================================
-    // 4. تسجيل الدخول والإنشاء
-    // ============================================
-    async function handleLogin() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      if (!email || !password) return showError('أدخل البريد وكلمة المرور');
+    function phoneToEmail(phone) {
+      let cleanPhone = phone.replace(/\D/g, '');
+      return cleanPhone + '@app.local';
+    }
 
+    async function handleLogin() {
+      const phone = document.getElementById('phone').value;
+      const password = document.getElementById('password').value;
+      if (!phone || !password) return showError('auth-error', 'أدخل رقم الموبايل وكلمة المرور');
+
+      const email = phoneToEmail(phone);
       const btn = document.getElementById('loginBtn');
       btn.textContent = 'جاري الدخول...'; btn.disabled = true;
 
       const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      
       btn.textContent = 'تسجيل الدخول'; btn.disabled = false;
-      if (error) showError('خطأ: ' + error.message);
+      if (error) showError('auth-error', 'رقم الموبايل أو كلمة المرور غير صحيحة');
     }
 
     async function handleSignup() {
-      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
       const password = document.getElementById('password').value;
       const fullName = document.getElementById('fullName').value;
+      const pin = document.getElementById('pin').value;
       
-      if (!email || !password || !fullName) return showError('أكمل كل البيانات');
+      if (!phone || !password || !fullName || pin.length !== 4) {
+        return showError('auth-error', 'أكمل كل البيانات (الرقم السري 4 أرقام)');
+      }
 
+      const email = phoneToEmail(phone);
       const btn = document.getElementById('signupBtn');
       btn.textContent = 'جاري الإنشاء...'; btn.disabled = true;
 
       const { error } = await supabaseClient.auth.signUp({ 
-        email, 
-        password,
-        options: { data: { full_name: fullName } }
+        email, password, options: { data: { full_name: fullName, phone: phone } }
       });
 
-      btn.textContent = 'إنشاء حساب جديد'; btn.disabled = false;
-      if (error) showError('خطأ: ' + error.message);
-      else alert('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول.');
+      if (error) {
+        showError('auth-error', error.message);
+        btn.textContent = 'إنشاء حساب جديد'; btn.disabled = false;
+      } else {
+        await supabaseClient.auth.signInWithPassword({ email, password });
+        // حفظ الـ PIN بعد إنشاء الحساب
+        await supabaseClient.rpc('set_recovery_pin', { p_phone: phone, p_pin: pin });
+        checkUserMembership();
+      }
+    }
+
+    async function handleResetPassword() {
+      const phone = document.getElementById('resetPhone').value;
+      const pin = document.getElementById('resetPin').value;
+      const newPassword = document.getElementById('resetNewPassword').value;
+
+      if (!phone || !pin || !newPassword) return showError('forgot-error', 'أكمل كل البيانات');
+
+      const btn = event.target;
+      btn.textContent = 'جاري التغيير...'; btn.disabled = true;
+
+      const { error } = await supabaseClient.rpc('reset_password_with_pin', { 
+        p_phone: phone, p_pin: pin, p_new_password: newPassword 
+      });
+
+      btn.textContent = 'تغيير كلمة المرور'; btn.disabled = false;
+
+      if (error) {
+        showError('forgot-error', error.message);
+      } else {
+        alert('تم تغيير كلمة المرور بنجاح! يمكنك تسجيل الدخول الآن.');
+        showScreen('auth-screen');
+      }
     }
 
     async function handleLogout() {
       await supabaseClient.auth.signOut();
     }
 
-    // ============================================
-    // 5. إنشاء شركة
-    // ============================================
     async function handleCreateCompany() {
       const name = document.getElementById('newCompanyName').value;
       if (!name) return alert('أدخل اسم الشركة');
-
       const btn = event.target;
       btn.textContent = 'جاري الإنشاء...'; btn.disabled = true;
-
       const { error } = await supabaseClient.rpc('create_new_company', { p_name: name });
-      
       btn.textContent = 'إنشاء الشركة'; btn.disabled = false;
       if (error) alert('خطأ: ' + error.message);
-      else checkUserMembership(); // إعادة التحقق
+      else checkUserMembership(); 
     }
 
-    // ============================================
-    // 6. التحقق من حالة المستخدم (هل عنده شركة؟)
-    // ============================================
     async function checkUserMembership() {
       const { data: { user } } = await supabaseClient.auth.getUser();
       if (!user) return showScreen('auth-screen');
 
-      // هنجيب العضوية
-      const { data: members, error } = await supabaseClient
+      const { data: members } = await supabaseClient
         .from('members')
         .select('role, companies(name)')
         .eq('user_id', user.id)
@@ -209,39 +241,24 @@
 
       showScreen('app-screen');
 
-      if (error || !members || members.length === 0) {
-        // مفيش شركة
+      if (!members || members.length === 0) {
         document.getElementById('no-company-section').classList.remove('hidden');
         document.getElementById('dashboard-section').classList.add('hidden');
       } else {
-        // عنده شركة
         document.getElementById('no-company-section').classList.add('hidden');
         document.getElementById('dashboard-section').classList.remove('hidden');
-        
-        const roleMap = {
-          'owner': 'مالك الشركة',
-          'accountant': 'محاسب',
-          'supervisor': 'مشرف موقع',
-          'storekeeper': 'أمين مخزن',
-          'engineer': 'مهندس'
-        };
-
+        const roleMap = { 'owner': 'مالك', 'accountant': 'محاسب', 'supervisor': 'مشرف', 'storekeeper': 'أمين مخزن', 'engineer': 'مهندس' };
         document.getElementById('display-company-name').textContent = members[0].companies.name;
         document.getElementById('display-role').textContent = roleMap[members[0].role] || members[0].role;
       }
     }
 
-    // ============================================
-    // 7. بدء التطبيق وتتبع حالة الجلسة
-    // ============================================
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (session) checkUserMembership();
       else showScreen('auth-screen');
     });
 
-    // تشغيل أولي
     checkUserMembership();
-
   </script>
 </body>
 </html>
