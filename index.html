@@ -21,42 +21,81 @@
     </div>
   </div>
 
-  <!-- شاشة الدخول -->
-  <div id="auth-screen" class="hidden min-h-screen flex items-center justify-center p-4">
+  <!-- ============================================== -->
+  <!-- 1. شاشة تسجيل الدخول (Login) -->
+  <!-- ============================================== -->
+  <div id="login-screen" class="hidden min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100">
       <div class="text-center mb-6">
         <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-black mb-4">ت</div>
-        <h1 class="text-2xl font-bold text-slate-800">نظام التشطيبات</h1>
+        <h1 class="text-2xl font-bold text-slate-800">تسجيل الدخول</h1>
+        <p class="text-slate-500 text-sm mt-1">أهلاً بك مجدداً في نظام التشطيبات</p>
       </div>
       <div class="space-y-4">
-        <div><label class="block text-sm font-bold mb-1">الاسم (للحساب الجديد)</label><input type="text" id="fullName" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500" placeholder="اسمك الثلاثي"></div>
-        <div><label class="block text-sm font-bold mb-1">رقم الموبايل</label><input type="tel" id="phone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="01xxxxxxxxx"></div>
-        <div><label class="block text-sm font-bold mb-1">كلمة المرور</label><input type="password" id="password" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="••••••••"></div>
-        <div><label class="block text-sm font-bold mb-1">الرقم السري (4 أرقام)</label><input type="text" id="pin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="1234"></div>
-        <div id="auth-error" class="text-red-500 text-sm font-bold hidden text-center bg-red-50 p-2 rounded-lg"></div>
-        <button id="loginBtn" onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl transition">تسجيل الدخول</button>
-        <button id="signupBtn" onclick="handleSignup()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl transition">إنشاء حساب جديد</button>
-        <div class="text-center mt-4"><button onclick="showScreen('forgot-screen')" class="text-amber-600 text-sm font-bold hover:underline">نسيت كلمة المرور؟</button></div>
+        <div><label class="block text-sm font-bold mb-1">رقم الموبايل</label><input type="tel" id="loginPhone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="01xxxxxxxxx"></div>
+        <div><label class="block text-sm font-bold mb-1">كلمة المرور</label><input type="password" id="loginPassword" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="••••••••"></div>
+        
+        <div id="login-error" class="text-red-500 text-sm font-bold hidden text-center bg-red-50 p-2 rounded-lg"></div>
+        
+        <button id="loginBtn" onclick="handleLogin()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl transition">دخول</button>
+        
+        <div class="text-center mt-4">
+          <button onclick="showScreen('forgot-screen')" class="text-amber-600 text-sm font-bold hover:underline mb-2 block w-full text-center">نسيت كلمة المرور؟</button>
+          <p class="text-sm text-slate-500">ليس لديك حساب؟ <button onclick="showScreen('signup-screen')" class="text-amber-600 font-bold hover:underline">إنشاء حساب جديد</button></p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- شاشة نسيت كلمة المرور -->
+  <!-- ============================================== -->
+  <!-- 2. شاشة إنشاء حساب جديد (Signup) -->
+  <!-- ============================================== -->
+  <div id="signup-screen" class="hidden min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 bg-gradient-to-br from-amber-400 to-amber-600 rounded-2xl mx-auto flex items-center justify-center text-white text-2xl font-black mb-4">ت</div>
+        <h1 class="text-2xl font-bold text-slate-800">إنشاء حساب جديد</h1>
+        <p class="text-slate-500 text-sm mt-1">انضم لإدارة شركات التشطيبات</p>
+      </div>
+      <div class="space-y-4">
+        <div><label class="block text-sm font-bold mb-1">الاسم بالكامل</label><input type="text" id="signupName" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500" placeholder="اسمك الثلاثي"></div>
+        <div><label class="block text-sm font-bold mb-1">رقم الموبايل</label><input type="tel" id="signupPhone" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="01xxxxxxxxx"></div>
+        <div><label class="block text-sm font-bold mb-1">كلمة المرور</label><input type="password" id="signupPassword" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="••••••••"></div>
+        <div><label class="block text-sm font-bold mb-1">الرقم السري للاستعادة (4 أرقام)</label><input type="text" id="signupPin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-amber-500 text-right dir-ltr" placeholder="1234"></div>
+        
+        <div id="signup-error" class="text-red-500 text-sm font-bold hidden text-center bg-red-50 p-2 rounded-lg"></div>
+        
+        <button id="signupBtn" onclick="handleSignup()" class="w-full bg-amber-500 text-slate-900 font-bold py-3 rounded-xl transition">إنشاء الحساب</button>
+        
+        <div class="text-center mt-4">
+          <p class="text-sm text-slate-500">لديك حساب بالفعل؟ <button onclick="showScreen('login-screen')" class="text-amber-600 font-bold hover:underline">تسجيل الدخول</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- 3. شاشة نسيت كلمة المرور (Forgot Password) -->
+  <!-- ============================================== -->
   <div id="forgot-screen" class="hidden min-h-screen flex items-center justify-center p-4">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 border border-slate-100">
       <div class="text-center mb-6"><h2 class="text-xl font-bold">استعادة كلمة المرور</h2></div>
       <div class="space-y-4">
-        <div><label class="block text-sm font-bold mb-1">رقم الموبايل</label><input type="tel" id="resetPhone" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr"></div>
-        <div><label class="block text-sm font-bold mb-1">الرقم السري (PIN)</label><input type="text" id="resetPin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr"></div>
-        <div><label class="block text-sm font-bold mb-1">كلمة المرور الجديدة</label><input type="password" id="resetNewPassword" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr"></div>
+        <div><label class="block text-sm font-bold mb-1">رقم الموبايل</label><input type="tel" id="resetPhone" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr" placeholder="01xxxxxxxxx"></div>
+        <div><label class="block text-sm font-bold mb-1">الرقم السري (PIN)</label><input type="text" id="resetPin" maxlength="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr" placeholder="1234"></div>
+        <div><label class="block text-sm font-bold mb-1">كلمة المرور الجديدة</label><input type="password" id="resetNewPassword" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-right dir-ltr" placeholder="••••••••"></div>
+        
         <div id="forgot-error" class="text-red-500 text-sm font-bold hidden text-center bg-red-50 p-2 rounded-lg"></div>
+        
         <button onclick="handleResetPassword()" class="w-full bg-amber-500 font-bold py-3 rounded-xl transition">تغيير كلمة المرور</button>
-        <button onclick="showScreen('auth-screen')" class="w-full text-slate-500 font-bold py-2 mt-2">رجوع</button>
+        <button onclick="showScreen('login-screen')" class="w-full text-slate-500 font-bold py-2 mt-2 hover:bg-slate-50 rounded-xl">رجوع</button>
       </div>
     </div>
   </div>
 
-  <!-- لوحة التحكم -->
+  <!-- ============================================== -->
+  <!-- 4. لوحة التحكم -->
+  <!-- ============================================== -->
   <div id="app-screen" class="hidden min-h-screen pb-20 bg-slate-50">
     <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-10">
       <div class="flex items-center gap-2"><div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center text-white font-bold">ت</div><span class="font-bold text-lg">التشطيبات</span></div>
@@ -64,9 +103,8 @@
     </header>
 
     <main class="p-4 max-w-2xl mx-auto space-y-6">
-      <!-- الشاشة الرئيسية -->
       <div id="home-view">
-        <div id="no-company-section" class="hidden bg-white rounded-2xl shadow-sm p-6 text-center">
+        <div id="no-company-section" class="hidden bg-white rounded-2xl shadow-sm p-6 text-center border">
           <h2 class="text-xl font-bold mb-2">أهلاً بك!</h2><p class="text-slate-500 mb-6">أنشئ شركتك الأولى للبدء.</p>
           <input type="text" id="newCompanyName" class="w-full px-4 py-3 rounded-xl border mb-3" placeholder="اسم شركة التشطيبات">
           <button onclick="handleCreateCompany()" class="w-full bg-amber-500 font-bold py-3 rounded-xl">إنشاء الشركة</button>
@@ -80,15 +118,15 @@
           </div>
 
           <div class="grid grid-cols-2 gap-4">
-            <button onclick="switchView('projects-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50">
+            <button onclick="switchView('projects-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50 border">
               <div class="text-3xl mb-2">🏗️</div><div class="font-bold text-slate-700">المشاريع</div>
             </button>
             
-            <button id="btn-reports" onclick="switchView('reports-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50 hidden">
+            <button id="btn-reports" onclick="switchView('reports-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50 hidden border">
               <div class="text-3xl mb-2">📝</div><div class="font-bold text-slate-700">التقارير اليومية</div>
             </button>
 
-            <button id="btn-team" onclick="switchView('team-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50 hidden">
+            <button id="btn-team" onclick="switchView('team-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50 hidden border">
               <div class="text-3xl mb-2">👥</div><div class="font-bold text-slate-700">الفريق</div>
             </button>
           </div>
@@ -162,14 +200,18 @@
     let currentUserRole = null;
     let allProjects = []; 
 
+    // دالة التنقل بين الشاشات (الدخول، التسجيل، الاستعادة، لوحة التحكم)
     function showScreen(screenId) {
       document.getElementById('loading-screen').classList.add('hidden');
-      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('signup-screen').classList.add('hidden');
       document.getElementById('forgot-screen').classList.add('hidden');
       document.getElementById('app-screen').classList.add('hidden');
+      
       document.getElementById(screenId).classList.remove('hidden');
     }
 
+    // دالة التنقل داخل لوحة التحكم
     function switchView(viewId) {
       document.getElementById('home-view').classList.add('hidden');
       document.getElementById('projects-view').classList.add('hidden');
@@ -191,23 +233,31 @@
 
     function phoneToEmail(phone) { return phone.replace(/\D/g, '') + '@app.local'; }
 
+    // تسجيل الدخول
     async function handleLogin() {
-      const email = phoneToEmail(document.getElementById('phone').value);
-      const password = document.getElementById('password').value;
+      const phone = document.getElementById('loginPhone').value;
+      const password = document.getElementById('loginPassword').value;
+      if (!phone || !password) return showError('login-error', 'أدخل رقم الموبايل وكلمة المرور');
+      
+      const email = phoneToEmail(phone);
       const btn = document.getElementById('loginBtn');
       btn.textContent = 'جاري الدخول...'; btn.disabled = true;
+      
       const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      btn.textContent = 'تسجيل الدخول'; btn.disabled = false;
-      if (error) showError('auth-error', 'رقم الموبايل أو كلمة المرور غير صحيحة');
+      
+      btn.textContent = 'دخول'; btn.disabled = false;
+      if (error) showError('login-error', 'رقم الموبايل أو كلمة المرور غير صحيحة');
     }
 
+    // إنشاء حساب
     async function handleSignup() {
-      const phone = document.getElementById('phone').value;
-      const password = document.getElementById('password').value;
-      const fullName = document.getElementById('fullName').value;
-      const pin = document.getElementById('pin').value;
+      const phone = document.getElementById('signupPhone').value;
+      const password = document.getElementById('signupPassword').value;
+      const fullName = document.getElementById('signupName').value;
+      const pin = document.getElementById('signupPin').value;
       
-      if (!phone || !password || !fullName || pin.length !== 4) return showError('auth-error', 'أكمل كل البيانات');
+      if (!phone || !password || !fullName || pin.length !== 4) return showError('signup-error', 'أكمل كل البيانات (PIN 4 أرقام)');
+      
       const email = phoneToEmail(phone);
       const btn = document.getElementById('signupBtn');
       btn.textContent = 'جاري الإنشاء...'; btn.disabled = true;
@@ -215,8 +265,8 @@
       const { error } = await supabaseClient.auth.signUp({ email, password, options: { data: { full_name: fullName, phone: phone } } });
 
       if (error) {
-        showError('auth-error', error.message);
-        btn.textContent = 'إنشاء حساب جديد'; btn.disabled = false;
+        showError('signup-error', error.message);
+        btn.textContent = 'إنشاء الحساب'; btn.disabled = false;
       } else {
         await supabaseClient.auth.signInWithPassword({ email, password });
         await supabaseClient.rpc('set_recovery_pin', { p_phone: phone, p_pin: pin });
@@ -224,19 +274,23 @@
       }
     }
 
+    // استعادة الباسورد
     async function handleResetPassword() {
       const phone = document.getElementById('resetPhone').value;
       const pin = document.getElementById('resetPin').value;
       const newPassword = document.getElementById('resetNewPassword').value;
       if (!phone || !pin || !newPassword) return showError('forgot-error', 'أكمل كل البيانات');
+      
       const btn = event.target;
       btn.textContent = 'جاري التغيير...'; btn.disabled = true;
+      
       const { error } = await supabaseClient.rpc('reset_password_with_pin', { p_phone: phone, p_pin: pin, p_new_password: newPassword });
+      
       btn.textContent = 'تغيير كلمة المرور'; btn.disabled = false;
       if (error) showError('forgot-error', error.message);
       else {
-        alert('تم تغيير كلمة المرور بنجاح!');
-        showScreen('auth-screen');
+        alert('تم تغيير كلمة المرور بنجاح! يمكنك تسجيل الدخول الآن.');
+        showScreen('login-screen');
       }
     }
 
@@ -255,7 +309,7 @@
 
     async function checkUserMembership() {
       const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) return showScreen('auth-screen');
+      if (!user) return showScreen('login-screen'); // لو مش مسجل، رحله لشاشة الدخول
 
       const urlParams = new URLSearchParams(window.location.search);
       const inviteToken = urlParams.get('invite');
@@ -397,12 +451,11 @@
     }
 
     // ============================================
-    // دوال التقارير اليومية (المصححة)
+    // دوال التقارير اليومية
     // ============================================
     async function loadReportsView() {
       if (!currentCompanyId) return;
       
-      // 1. تحميل المشاريع في القائمة المنسدلة
       const projSelect = document.getElementById('reportProject');
       const { data: projData, error: projError } = await supabaseClient.from('projects').select('id, name').eq('company_id', currentCompanyId);
       
@@ -414,18 +467,15 @@
         if(allProjects.length === 0) projSelect.innerHTML = `<option value="">لا توجد مشاريع مضافة</option>`;
       }
 
-      // 2. تحميل قائمة التقارير
       const listEl = document.getElementById('reports-list');
       listEl.innerHTML = `<div class="text-center text-slate-400 py-4 text-sm">جاري التحميل...</div>`;
 
-      // 3. تحميل الأعضاء (عشان نربط اسم الكاتب بالتقرير)
       const { data: membersData } = await supabaseClient.from('members').select('user_id, full_name, role').eq('company_id', currentCompanyId);
       const memberMap = {};
       if (membersData) {
         membersData.forEach(m => { memberMap[m.user_id] = { name: m.full_name, role: m.role }; });
       }
 
-      // 4. تحميل التقارير (بدون ربط مباشر بجدول الأعضاء)
       const { data, error } = await supabaseClient
         .from('daily_reports')
         .select(`*, projects(name)`)
@@ -439,8 +489,6 @@
 
       listEl.innerHTML = data.map(r => {
         const date = new Date(r.created_at).toLocaleDateString('ar-EG');
-        
-        // ربط التقرير باسم العضو
         let authorName = "غير معروف";
         let authorRole = "";
         
@@ -488,10 +536,9 @@
       }
     }
 
-    // تشغيل التطبيق
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (session) checkUserMembership();
-      else showScreen('auth-screen');
+      else showScreen('login-screen');
     });
 
     checkUserMembership();
