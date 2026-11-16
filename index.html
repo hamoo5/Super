@@ -84,12 +84,10 @@
               <div class="text-3xl mb-2">🏗️</div><div class="font-bold text-slate-700">المشاريع</div>
             </button>
             
-            <!-- يظهر للمالك والمهندس والمشرف -->
             <button id="btn-reports" onclick="switchView('reports-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50 hidden">
               <div class="text-3xl mb-2">📝</div><div class="font-bold text-slate-700">التقارير اليومية</div>
             </button>
 
-            <!-- يظهر للمالك فقط -->
             <button id="btn-team" onclick="switchView('team-view')" class="bg-white p-4 rounded-2xl shadow-sm text-center hover:bg-slate-50 hidden">
               <div class="text-3xl mb-2">👥</div><div class="font-bold text-slate-700">الفريق</div>
             </button>
@@ -112,7 +110,7 @@
         <div id="projects-list" class="space-y-3"></div>
       </div>
 
-      <!-- شاشة الفريق (للمالك فقط) -->
+      <!-- شاشة الفريق -->
       <div id="team-view" class="hidden">
         <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">الفريق</h2><button onclick="switchView('home-view')" class="text-amber-600 text-sm font-bold bg-amber-50 px-3 py-1.5 rounded-lg">رجوع</button></div>
         <div class="bg-white rounded-2xl shadow-sm p-4 border mb-6">
@@ -139,7 +137,6 @@
       <div id="reports-view" class="hidden">
         <div class="flex justify-between items-center mb-4"><h2 class="text-xl font-bold">التقارير اليومية</h2><button onclick="switchView('home-view')" class="text-amber-600 text-sm font-bold bg-amber-50 px-3 py-1.5 rounded-lg">رجوع</button></div>
         
-        <!-- فورم إضافة تقرير (للمهندس والمشرف والمالك) -->
         <div id="add-report-form" class="bg-white rounded-2xl shadow-sm p-4 border mb-6">
           <h3 class="font-bold mb-3 text-slate-700">إضافة تقرير جديد</h3>
           <div class="space-y-3">
@@ -149,7 +146,6 @@
           </div>
         </div>
 
-        <!-- قائمة التقارير -->
         <div id="reports-list" class="space-y-3"></div>
       </div>
 
@@ -164,7 +160,7 @@
 
     let currentCompanyId = null;
     let currentUserRole = null;
-    let allProjects = []; // لحفظ المشاريع لاستخدامها في التقارير
+    let allProjects = []; 
 
     function showScreen(screenId) {
       document.getElementById('loading-screen').classList.add('hidden');
@@ -294,7 +290,6 @@
         document.getElementById('display-company-name').textContent = members[0].companies.name;
         document.getElementById('display-role').textContent = roleMap[currentUserRole] || currentUserRole;
 
-        // تخصيص الأزرار حسب الصلاحية
         document.getElementById('btn-team').classList.add('hidden');
         document.getElementById('btn-reports').classList.add('hidden');
 
@@ -320,7 +315,7 @@
       if (error) return listEl.innerHTML = `<div class="text-red-500 text-sm text-center">خطأ: ${error.message}</div>`;
       if (data.length === 0) return listEl.innerHTML = `<div class="text-center text-slate-400 py-4 text-sm">لا توجد مشاريع.</div>`;
 
-      allProjects = data; // تخزينها للاستخدام في التقارير
+      allProjects = data; 
 
       listEl.innerHTML = data.map(proj => `
         <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
@@ -402,43 +397,64 @@
     }
 
     // ============================================
-    // دوال التقارير اليومية
+    // دوال التقارير اليومية (المصححة)
     // ============================================
     async function loadReportsView() {
       if (!currentCompanyId) return;
       
-      // تحميل المشاريع في القائمة المنسدلة
+      // 1. تحميل المشاريع في القائمة المنسدلة
       const projSelect = document.getElementById('reportProject');
-      if (allProjects.length === 0) {
-        const { data } = await supabaseClient.from('projects').select('id, name').eq('company_id', currentCompanyId);
-        allProjects = data || [];
-      }
+      const { data: projData, error: projError } = await supabaseClient.from('projects').select('id, name').eq('company_id', currentCompanyId);
       
-      projSelect.innerHTML = allProjects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-      if(allProjects.length === 0) projSelect.innerHTML = `<option value="">لا توجد مشاريع مضافة</option>`;
+      if (projError) {
+        projSelect.innerHTML = `<option value="">خطأ في تحميل المشاريع</option>`;
+      } else {
+        allProjects = projData || [];
+        projSelect.innerHTML = allProjects.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+        if(allProjects.length === 0) projSelect.innerHTML = `<option value="">لا توجد مشاريع مضافة</option>`;
+      }
 
-      // تحميل التقارير
+      // 2. تحميل قائمة التقارير
       const listEl = document.getElementById('reports-list');
       listEl.innerHTML = `<div class="text-center text-slate-400 py-4 text-sm">جاري التحميل...</div>`;
 
+      // 3. تحميل الأعضاء (عشان نربط اسم الكاتب بالتقرير)
+      const { data: membersData } = await supabaseClient.from('members').select('user_id, full_name, role').eq('company_id', currentCompanyId);
+      const memberMap = {};
+      if (membersData) {
+        membersData.forEach(m => { memberMap[m.user_id] = { name: m.full_name, role: m.role }; });
+      }
+
+      // 4. تحميل التقارير (بدون ربط مباشر بجدول الأعضاء)
       const { data, error } = await supabaseClient
         .from('daily_reports')
-        .select(`*, projects(name), members(full_name, role)`)
+        .select(`*, projects(name)`)
         .eq('company_id', currentCompanyId)
         .order('created_at', { ascending: false });
 
       if (error) return listEl.innerHTML = `<div class="text-red-500 text-sm text-center">خطأ: ${error.message}</div>`;
       if (data.length === 0) return listEl.innerHTML = `<div class="text-center text-slate-400 py-4 text-sm">لا توجد تقارير بعد.</div>`;
 
+      const roleMap = { 'owner': 'المالك', 'engineer': 'مهندس', 'supervisor': 'مشرف', 'accountant': 'محاسب', 'storekeeper': 'أمين مخزن' };
+
       listEl.innerHTML = data.map(r => {
         const date = new Date(r.created_at).toLocaleDateString('ar-EG');
-        const roleMap = { 'owner': 'المالك', 'engineer': 'مهندس', 'supervisor': 'مشرف', 'accountant': 'محاسب', 'storekeeper': 'أمين مخزن' };
+        
+        // ربط التقرير باسم العضو
+        let authorName = "غير معروف";
+        let authorRole = "";
+        
+        if (memberMap[r.user_id]) {
+          authorName = memberMap[r.user_id].name || roleMap[memberMap[r.user_id].role];
+          authorRole = roleMap[memberMap[r.user_id].role] || "";
+        }
+
         return `
           <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
             <div class="flex justify-between items-start mb-2">
               <div>
-                <h4 class="font-bold text-slate-800 text-sm">${r.projects.name}</h4>
-                <p class="text-xs text-amber-600 font-bold">${r.members.full_name || roleMap[r.members.role]}</p>
+                <h4 class="font-bold text-slate-800 text-sm">${r.projects ? r.projects.name : 'مشروع محذوف'}</h4>
+                <p class="text-xs text-amber-600 font-bold">${authorName} (${authorRole})</p>
               </div>
               <span class="text-xs text-slate-400">${date}</span>
             </div>
