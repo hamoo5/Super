@@ -435,8 +435,8 @@ async function toggleAttendance(empId, isPresent) {
         state.attendance = state.attendance.filter(a => a.id !== rec.id);
       }
     } else {
-      // استخدام صيغة الوقت HH:MM:SS عشان قاعدة البيانات تقبلها
-      const time = new Date().toTimeString().slice(0, 8); 
+      // التعديل هنا: بعتنا تاريخ ووقت كاملين عشان الداتابيز تقبله
+      const time = new Date().toISOString(); 
       
       const res = await api('attendance', { method: 'POST', body: {
         company_id: state.currentCompany.id,
@@ -449,11 +449,11 @@ async function toggleAttendance(empId, isPresent) {
       if (res && res.length > 0) {
         state.attendance.push(res[0]);
       } else {
-        await loadData(); // تحديث لو الداتا مجتش في الرد
+        await loadData();
       }
     }
   } catch (error) {
-    alert("خطأ في تسجيل الحضور: " + (error.message || "تأكد من الصلاحيات في Supabase"));
+    alert("خطأ في تسجيل الحضور: " + (error.message || "تأكد من الصلاحيات"));
     console.error(error);
   }
   renderAttendance();
