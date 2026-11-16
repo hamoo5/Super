@@ -1,236 +1,248 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HR Pro | مستشار الموارد البشرية</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2563eb">
-    <script src="https://jsdelivr.net"></script>
-    <style>
-        *{box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif}
-        body{margin:0;background:#f1f5f9;color:#1e293b;padding-bottom:60px}
-        .hidden{display:none!important}
-        .card{background:#fff;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:12px}
-        .btn{border:none;border-radius:12px;padding:12px;font-weight:700;cursor:pointer;font-size:14px;width:100%}
-        .btn-blue{background:#2563eb;color:#fff}
-        .btn-green{background:#10b981;color:#fff;width:auto;padding:8px 14px;font-size:12px}
-        .btn-gray{background:#e2e8f0;color:#334155}
-        input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:12px;margin-bottom:10px;font-size:14px}
-        header{background:#fff;padding:12px 16px;display:flex;gap:8px;align-items:center;position:sticky;top:0;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-        nav{display:flex;background:#fff;border-bottom:1px solid #e2e8f0}
-        nav button{flex:1;padding:12px;border:none;background:none;font-weight:600;color:#64748b;cursor:pointer}
-        nav button.active{color:#2563eb;border-bottom:3px solid #2563eb}
-        .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-        .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
-        .row{display:flex;justify-content:space-between;align-items:center;padding:10px;background:#f8fafc;border-radius:12px;margin-bottom:8px}
-    </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مستشار HR — اختبار الاتصال</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --card:#fff; --ink:#0f172a; --muted:#6b7a90; --line:#e6ebf2;
+    --brand:#0f766e; --on-brand:#fff; --danger:#e11d48; --ok:#15803d;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{
+    margin:0; min-height:100dvh;
+    font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+    background:var(--bg); color:var(--ink); font-size:15px;
+    display:grid; place-items:center; padding:24px 16px;
+  }
+  .card{
+    width:100%; max-width:400px; background:var(--card);
+    border:1px solid var(--line); border-radius:20px; padding:26px 22px;
+    box-shadow:0 10px 30px -18px rgba(16,24,40,.25);
+  }
+  .logo{
+    width:54px; height:54px; border-radius:16px;
+    background:var(--brand); color:var(--on-brand);
+    display:grid; place-items:center; font-weight:800; font-size:17px;
+    margin-bottom:16px;
+  }
+  h1{font-size:20px; margin:0 0 4px}
+  .sub{color:var(--muted); font-size:13px; margin:0 0 18px}
+  label{display:grid; gap:6px; margin-bottom:12px; font-size:12.5px; font-weight:700; color:var(--muted)}
+  input{
+    width:100%; padding:12px; border:1px solid var(--line); border-radius:12px;
+    background:var(--card); color:var(--ink); font:inherit; font-size:15px;
+  }
+  input:focus{outline:2px solid var(--brand); outline-offset:1px; border-color:transparent}
+  button{
+    width:100%; min-height:46px; padding:12px; border:0; border-radius:12px;
+    background:var(--brand); color:var(--on-brand);
+    font:inherit; font-weight:700; font-size:15px; cursor:pointer; margin-top:6px;
+  }
+  button:disabled{opacity:.55; pointer-events:none}
+  .err{color:var(--danger); font-size:13px; font-weight:700; min-height:20px; margin-top:8px}
+  .ok{color:var(--ok)}
+  .info{font-size:14px; line-height:1.7}
+  .info b{color:var(--brand)}
+  .tag{
+    display:inline-block; background:#e6f4f1; color:var(--brand);
+    padding:4px 10px; border-radius:999px; font-size:12.5px; font-weight:700; margin-top:8px;
+  }
+</style>
 </head>
 <body>
-    <div id="auth-screen" style="max-width:400px;margin:40px auto;padding:16px">
-        <div class="card" style="padding:24px;text-align:center">
-            <div style="width:56px;height:56px;background:#2563eb;color:#fff;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:22px;font-weight:800">HR</div>
-            <h2 style="margin:0 0 6px">بوابة المستشار الذكية</h2>
-            <p style="color:#64748b;font-size:13px;margin:0 0 20px">إدارة الموارد البشرية لعدة شركات</p>
-            <input type="email" id="email" placeholder="البريد الإلكتروني">
-            <input type="password" id="password" placeholder="كلمة المرور">
-            <button onclick="handleAuth('login')" class="btn btn-blue" style="margin-bottom:8px">تسجيل الدخول</button>
-            <button onclick="handleAuth('signup')" class="btn btn-gray">إنشاء حساب مستشار جديد</button>
-            <p id="auth-msg" style="color:#ef4444;font-size:13px;margin-top:12px"></p>
-        </div>
-    </div>
 
-    <div id="app-screen" class="hidden" style="max-width:600px;margin:0 auto">
-        <header>
-            <select id="company-switcher" onchange="switchCompany()" style="margin:0;flex:1;font-weight:700"></select>
-            <button onclick="openModal('company-modal')" class="btn btn-blue" style="width:auto;padding:10px 14px">+ شركة</button>
-            <button onclick="logout()" style="border:none;background:none;color:#ef4444;font-weight:700">خروج</button>
-        </header>
-        <nav>
-            <button onclick="showTab('radar')" id="tab-radar" class="active">📡 الرادار</button>
-            <button onclick="showTab('employees')" id="tab-employees">👥 الموظفين</button>
-            <button onclick="showTab('attendance')" id="tab-attendance">⏱️ الحضور</button>
-            <button onclick="showTab('payroll')" id="tab-payroll">💰 الرواتب</button>
-        </nav>
-        <main style="padding:16px">
-            <section id="view-radar">
-                <div class="grid2">
-                    <div class="card"><small style="color:#64748b">الموظفين</small><h2 id="stat-employees" style="margin:4px 0 0;color:#2563eb">0</h2></div>
-                    <div class="card"><small style="color:#64748b">حضور اليوم</small><h2 id="stat-attendance" style="margin:4px 0 0;color:#10b981">0</h2></div>
-                </div>
-                <div class="card"><h4 style="margin:0 0 10px">⚡ تنبيهات الرادار</h4><div id="radar-alerts"></div></div>
-            </section>
-            <section id="view-employees" class="hidden">
-                <button onclick="openModal('employee-modal')" class="btn btn-blue" style="margin-bottom:12px">+ إضافة موظف جديد</button>
-                <div id="employees-list"></div>
-            </section>
-            <section id="view-attendance" class="hidden"><div class="card"><h4 style="margin:0 0 10px">تسجيل حضور اليوم</h4><div id="attendance-list"></div></div></section>
-            <section id="view-payroll" class="hidden"><div class="card"><h4 style="margin:0 0 10px">إرسال الرواتب واتساب</h4><div id="payroll-list"></div></div></section>
-        </main>
-    </div>
+<!-- =============== شاشة الدخول =============== -->
+<div class="card" id="loginCard">
+  <div class="logo">HR</div>
+  <h1>تسجيل الدخول</h1>
+  <p class="sub">الخطوة 1: التأكد من الاتصال بقاعدة البيانات</p>
 
-    <div id="company-modal" class="modal hidden">
-        <div class="card" style="width:100%;max-width:400px">
-            <h3 style="margin-top:0">إضافة شركة</h3>
-            <input type="text" id="comp-name" placeholder="اسم الشركة">
-            <input type="text" id="comp-activity" placeholder="مجال النشاط">
-            <select id="comp-currency"><option value="EGP">جنيه مصري (EGP)</option><option value="SAR">ريال سعودي (SAR)</option><option value="AED">درهم إماراتي (AED)</option></select>
-            <div class="grid2"><button onclick="addCompany()" class="btn btn-blue">حفظ</button><button onclick="closeModal('company-modal')" class="btn btn-gray">إلغاء</button></div>
-        </div>
-    </div>
+  <form id="loginForm">
+    <label>البريد الإلكتروني
+      <input id="email" type="email" inputmode="email" autocomplete="email" required placeholder="you@example.com">
+    </label>
+    <label>كلمة المرور
+      <input id="password" type="password" autocomplete="current-password" required placeholder="••••••••">
+    </label>
+    <button id="loginBtn" type="submit">دخول</button>
+    <div class="err" id="errMsg"></div>
+  </form>
+</div>
 
-    <div id="employee-modal" class="modal hidden">
-        <div class="card" style="width:100%;max-width:400px">
-            <h3 style="margin-top:0">إضافة موظف</h3>
-            <input type="text" id="emp-name" placeholder="الاسم بالكامل">
-            <input type="text" id="emp-title" placeholder="المسمى الوظيفي">
-            <input type="tel" id="emp-phone" placeholder="رقم الواتساب (2010xxxxxxxx)">
-            <input type="number" id="emp-salary" placeholder="الراتب الأساسي">
-            <label style="font-size:12px;color:#64748b">تاريخ انتهاء العقد:</label>
-            <input type="date" id="emp-contract">
-            <div class="grid2"><button onclick="addEmployee()" class="btn btn-blue">حفظ</button><button onclick="closeModal('employee-modal')" class="btn btn-gray">إلغاء</button></div>
-        </div>
-    </div>
-    <script>
-        const SUPABASE_URL = 'https://qdqecfaozbxivlwbinew.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_EK-n56uXsI94eiGWhH25sQ_Toj32Oho';
-        const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<!-- =============== شاشة النجاح =============== -->
+<div class="card" id="appCard" hidden>
+  <div class="logo">✓</div>
+  <h1>الاتصال شغّال 🎉</h1>
+  <p class="sub">تم تسجيل الدخول وقراءة البيانات من Supabase</p>
+  <div class="info">
+    <div>المستخدم: <b id="userEmail">—</b></div>
+    <div>عدد شركاتك: <b id="companiesCount">—</b></div>
+    <div id="companiesList" style="margin-top:10px"></div>
+  </div>
+  <button id="logoutBtn" style="background:transparent;color:var(--ink);border:1px solid var(--line);margin-top:16px">خروج</button>
+</div>
 
-        let currentUser = null, currentCompany = null, companiesList = [], employeesList = [];
+<script>
+/* ============================================================
+   ⚙️  الإعدادات (تم تحديث الرابط بنجاح)
+   ============================================================ */
+const CONFIG = {
+  SUPABASE_URL: 'https://qdqecfaozbxivlwbinew.supabase.co',
+  SUPABASE_KEY: 'sb_publishable_EK-n56uXsI94eiGWhH25sQ_Toj32Oho'
+};
 
-        if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+/* ============================================================
+   🪛  أدوات مساعدة
+   ============================================================ */
+const $ = (s) => document.querySelector(s);
 
-        db.auth.onAuthStateChange((event, session) => {
-            if (session) {
-                currentUser = session.user;
-                document.getElementById('auth-screen').classList.add('hidden');
-                document.getElementById('app-screen').classList.remove('hidden');
-                loadCompanies();
-            } else {
-                document.getElementById('auth-screen').classList.remove('hidden');
-                document.getElementById('app-screen').classList.add('hidden');
-            }
-        });
+const store = {
+  get() { try { return JSON.parse(localStorage.getItem('hr_session') || 'null'); } catch { return null; } },
+  set(v) { v ? localStorage.setItem('hr_session', JSON.stringify(v)) : localStorage.removeItem('hr_session'); }
+};
 
-        async function handleAuth(type) {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const msg = document.getElementById('auth-msg');
-            msg.textContent = 'جاري المعالجة...';
-            const { error } = type === 'login' 
-                ? await db.auth.signInWithPassword({ email, password })
-                : await db.auth.signUp({ email, password });
-            msg.textContent = error ? error.message : (type === 'signup' ? 'تم إنشاء الحساب! سجل دخولك الآن.' : '');
-        }
+async function authCall(path, body) {
+  const res = await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'apikey': CONFIG.SUPABASE_KEY },
+    body: JSON.stringify(body)
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.error_description || data.msg || data.message || 'تعذر إتمام الطلب');
+  return data;
+}
 
-        async function logout() { await db.auth.signOut(); }
+async function signIn(email, password) {
+  const d = await authCall('token?grant_type=password', { email, password });
+  store.set({
+    access_token: d.access_token,
+    refresh_token: d.refresh_token,
+    user: d.user,
+    expires_at: Date.now() + (d.expires_in || 3600) * 1000
+  });
+  return d.user;
+}
 
-        async function loadCompanies() {
-            const { data } = await db.from('companies').select('*').order('created_at', { ascending: false });
-            companiesList = data || [];
-            const sw = document.getElementById('company-switcher');
-            if (!companiesList.length) { sw.innerHTML = '<option value="">أضف أول شركة +</option>'; return; }
-            sw.innerHTML = companiesList.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-            switchCompany();
-        }
+async function refreshSession() {
+  const s = store.get();
+  if (!s?.refresh_token) throw new Error('NO_SESSION');
+  const d = await authCall('token?grant_type=refresh_token', { refresh_token: s.refresh_token });
+  store.set({ ...s, access_token: d.access_token, refresh_token: d.refresh_token,
+              expires_at: Date.now() + (d.expires_in || 3600) * 1000 });
+}
 
-        function switchCompany() {
-            currentCompany = companiesList.find(c => c.id === document.getElementById('company-switcher').value);
-            if (currentCompany) loadCompanyData();
-        }
+async function signOut() {
+  const s = store.get();
+  if (s?.access_token) {
+    try {
+      await fetch(`${CONFIG.SUPABASE_URL}/auth/v1/logout`, {
+        method: 'POST',
+        headers: { apikey: CONFIG.SUPABASE_KEY, Authorization: 'Bearer ' + s.access_token }
+      });
+    } catch {}
+  }
+  store.set(null);
+}
 
-        async function addCompany() {
-            const name = document.getElementById('comp-name').value;
-            if (!name) return;
-            await db.from('companies').insert([{
-                name,
-                activity_type: document.getElementById('comp-activity').value,
-                currency: document.getElementById('comp-currency').value,
-                owner_id: currentUser.id
-            }]);
-            closeModal('company-modal');
-            loadCompanies();
-        }
+/* استدعاء REST — مع تجديد تلقائي للتوكن */
+async function api(path, opts = {}, retry = true) {
+  const { method = 'GET', body } = opts;
+  const s = store.get();
+  const token = s?.access_token || CONFIG.SUPABASE_KEY;
 
-        async function loadCompanyData() {
-            const { data: emps } = await db.from('employees').select('*').eq('company_id', currentCompany.id);
-            employeesList = emps || [];
-            document.getElementById('stat-employees').textContent = employeesList.length;
+  const headers = {
+    'apikey': CONFIG.SUPABASE_KEY,
+    'Authorization': 'Bearer ' + token,
+    'Accept': 'application/json'
+  };
+  if (body !== undefined) headers['Content-Type'] = 'application/json';
+  if (method !== 'GET') headers['Prefer'] = 'return=representation';
 
-            const today = new Date().toISOString().split('T');
-            const { data: att } = await db.from('attendance').select('*').eq('company_id', currentCompany.id).eq('work_date', today);
-            const attendedIds = (att || []).map(a => a.employee_id);
-            document.getElementById('stat-attendance').textContent = attendedIds.length;
+  const res = await fetch(`${CONFIG.SUPABASE_URL}/rest/v1/${path}`, {
+    method, headers,
+    body: body !== undefined ? JSON.stringify(body) : undefined
+  });
 
-            renderRadar(); renderEmployees(); renderAttendance(attendedIds); renderPayroll();
-        }
+  if (res.status === 401 && retry && s) {
+    try { await refreshSession(); }
+    catch { store.set(null); showLogin(); throw new Error('انتهت الجلسة، سجّل الدخول من جديد'); }
+    return api(path, opts, false);
+  }
 
-        function renderRadar() {
-            let alerts = [], today = new Date();
-            employeesList.forEach(e => {
-                if (e.contract_end_date) {
-                    const diff = Math.ceil((new Date(e.contract_end_date) - today) / 86400000);
-                    if (diff <= 30 && diff >= 0) alerts.push(`⚠️ عقد <b>${e.full_name}</b> ينتهي خلال ${diff} يوم.`);
-                    if (diff < 0) alerts.push(`🚨 عقد <b>${e.full_name}</b> منتهي!`);
-                }
-            });
-            document.getElementById('radar-alerts').innerHTML = alerts.length 
-                ? alerts.map(a => `<div class="row" style="background:#fef3c7;color:#92400e;font-size:13px">${a}</div>`).join('')
-                : '<small style="color:#10b981">✅ لا توجد تنبيهات عاجلة.</small>';
-        }
+  const text = await res.text();
+  const data = text ? JSON.parse(text) : null;
+  if (!res.ok) throw new Error(data?.message || data?.details || data?.hint || 'خطأ في الاتصال بقاعدة البيانات');
+  return data;
+}
 
-        function renderEmployees() {
-            document.getElementById('employees-list').innerHTML = employeesList.map(e => `
-                <div class="card" style="display:flex;justify-content:space-between;align-items:center">
-                    <div><b>${e.full_name}</b><br><small style="color:#64748b">${e.job_title || 'موظف'} • ${e.base_salary} ${currentCompany.currency}</small></div>
-                    <span style="background:#dbeafe;color:#1d4ed8;padding:4px 8px;border-radius:8px;font-size:12px">نشط</span>
-                </div>`).join('') || '<p style="text-align:center;color:#94a3b8;font-size:13px">لا يوجد موظفون بعد</p>';
-        }
+/* ============================================================
+   🎬  التطبيق
+   ============================================================ */
+function showLogin() {
+  $('#loginCard').hidden = false;
+  $('#appCard').hidden = true;
+}
 
-        function renderAttendance(attendedIds) {
-            document.getElementById('attendance-list').innerHTML = employeesList.map(e => `
-                <div class="row"><span>${e.full_name}</span>
-                ${attendedIds.includes(e.id) ? '<b style="color:#10b981;font-size:12px">✔️ حاضر</b>' : `<button onclick="markPresent('${e.id}')" class="btn btn-green">تسجيل</button>`}
-                </div>`).join('');
-        }
+async function showApp(user) {
+  $('#loginCard').hidden = true;
+  $('#appCard').hidden = false;
+  $('#userEmail').textContent = user.email || '—';
 
-        async function markPresent(empId) {
-            await db.from('attendance').insert([{ company_id: currentCompany.id, employee_id: empId, check_in: new Date().toISOString(), work_mode: 'remote' }]);
-            loadCompanyData();
-        }
+  try {
+    const companies = await api(`companies?select=*&owner_id=eq.${user.id}&order=name.asc`);
+    $('#companiesCount').textContent = companies.length;
+    if (companies.length) {
+      $('#companiesList').innerHTML = companies
+        .map(c => `<div class="tag">${c.name}</div>`)
+        .join(' ');
+    } else {
+      $('#companiesList').innerHTML =
+        `<div style="color:var(--muted);font-size:13px">لا توجد شركات بعد — هنضيفها في الخطوة 2</div>`;
+    }
+  } catch (e) {
+    $('#companiesList').innerHTML =
+      `<div style="color:var(--danger);font-size:13px">فشل قراءة الشركات: ${e.message}</div>`;
+  }
+}
 
-        function renderPayroll() {
-            const month = new Date().toLocaleString('ar-EG', { month: 'long', year: 'numeric' });
-            document.getElementById('payroll-list').innerHTML = employeesList.map(e => {
-                const msg = encodeURIComponent(`مرحباً ${e.full_name}، بيان راتب (${month}) من شركة *${currentCompany.name}*:\nالصافي: ${e.base_salary} ${currentCompany.currency}`);
-                return `<div class="row"><div><b>${e.full_name}</b><br><small>${e.base_salary} ${currentCompany.currency}</small></div>
-                <a href="https://wa.me{e.phone}?text=${msg}" target="_blank" style="background:#16a34a;color:#fff;text-decoration:none;padding:8px 12px;border-radius:10px;font-size:12px;font-weight:700">📲 واتساب</a></div>`;
-            }).join('');
-        }
+/* ---- الدخول ---- */
+$('#loginForm').addEventListener('submit', async (ev) => {
+  ev.preventDefault();
+  const btn = $('#loginBtn');
+  const err = $('#errMsg');
+  btn.disabled = true; btn.textContent = 'جارٍ الدخول…';
+  err.textContent = ''; err.classList.remove('ok');
 
-        async function addEmployee() {
-            const full_name = document.getElementById('emp-name').value;
-            if (!full_name || !currentCompany) return;
-            await db.from('employees').insert([{
-                company_id: currentCompany.id, full_name,
-                job_title: document.getElementById('emp-title').value,
-                phone: document.getElementById('emp-phone').value,
-                base_salary: document.getElementById('emp-salary').value || 0,
-                contract_end_date: document.getElementById('emp-contract').value || null
-            }]);
-            closeModal('employee-modal'); loadCompanyData();
-        }
+  try {
+    const user = await signIn($('#email').value.trim(), $('#password').value);
+    err.textContent = '✓ تم الدخول';
+    err.classList.add('ok');
+    await showApp(user);
+  } catch (e) {
+    err.textContent = e.message || 'تعذر تسجيل الدخول';
+  } finally {
+    btn.disabled = false; btn.textContent = 'دخول';
+  }
+});
 
-        function showTab(t) {
-            ['radar','employees','attendance','payroll'].forEach(x => {
-                document.getElementById('view-'+x).classList.add('hidden');
-                document.getElementById('tab-'+x).classList.remove('active');
-            });
-            document.getElementById('view-'+t).classList.remove('hidden');
-            document.getElementById('tab-'+t).classList.add('active');
-        }
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-    </script>
+/* ---- الخروج ---- */
+$('#logoutBtn').addEventListener('click', async () => {
+  await signOut();
+  showLogin();
+});
+
+/* ---- استئناف الجلسة عند إعادة التحميل ---- */
+(async function boot() {
+  const s = store.get();
+  if (!s?.access_token) return showLogin();
+  if (s.expires_at && s.expires_at < Date.now() + 60000) {
+    try { await refreshSession(); }
+    catch { store.set(null); return showLogin(); }
+  }
+  showApp(store.get().user);
+})();
+</script>
 </body>
 </html>
