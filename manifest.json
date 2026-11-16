@@ -1,17 +1,1 @@
-{
-  "name": "HR Consultant Pro",
-  "short_name": "HR Pro",
-  "description": "منصة إدارة الموارد البشرية عن بعد لعدة شركات",
-  "start_url": "/index.html",
-  "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#2563eb",
-  "orientation": "portrait",
-  "icons": [
-    {
-      "src": "https://flaticon.com",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
+
